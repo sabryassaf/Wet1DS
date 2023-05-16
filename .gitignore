@@ -2,3 +2,15 @@
 .idea/
 
 cmake-build-debug/CMakeFiles/clion-log.txt
+
+cmake-build-debug/.cmake/api/v1/query/cache-v2
+
+cmake-build-debug/.cmake/api/v1/query/
+
+cmake-build-debug/.cmake/api/v1/reply/codemodel-v2-6af98c50898e41de0d80.json
+
+cmake-build-debug/.cmake/api/v1/reply/index-2023-05-16T19-55-28-0501.json
+
+cmake-build-debug/CMakeFiles/cmake.check_cache
+
+*.log

@@ -7,6 +7,7 @@
 
 #include <exception>
 #include <string>
+#include "Data.h"
 
 enum struct NodeType
 {
@@ -30,11 +31,11 @@ public:
 };
 
 
-template<class Data, class Key>
+template<class Data>
 class AVLNode
 {
+protected:
     Data *m_data;
-    Key *m_key;
     NodeType m_type;
 
 
@@ -46,7 +47,7 @@ class AVLNode
     int m_balanceFactor;
 
 public:
-    AVLNode(Data *data, Key *key);
+    AVLNode(Data *data);
 
     ~AVLNode();
 
@@ -64,7 +65,6 @@ public:
 
     int getHeight() const;
 
-    Key *getKey() const;
 
     Data *getData() const;
 
@@ -76,82 +76,109 @@ public:
 
     void updateParameters();
 
-    bool operator<(AVLNode &compare) const;
-
-    bool operator==(AVLNode &compare) const;
-
-    bool operator>(AVLNode &compare) const;
+    virtual int compareNodes(const AVLNode &other) const = 0;
 
 };
 
-template<class Data, class Key>
-bool AVLNode<Data, Key>::operator<(AVLNode<Data, Key> &compare) const
+template<class Data>
+class NodeByID : public AVLNode<Data>
 {
-    return this->m_key < compare.m_key;
-}
+    int compareNodes(const AVLNode<Data> &other) const override
+    {
+        const NodeByID<Data> *derived = dynamic_cast<const NodeByID<Data> *>(&other);
+        if (derived != nullptr)
+        {
+            return this->m_data->m_id - derived->getData()->m_id;
+        } else
+        {
+            throw (DATA_Type_Exceptions("The Data Types Aren't comparable "));
+        }
+    }
 
-template<class Data, class Key>
-bool AVLNode<Data, Key>::operator==(AVLNode<Data, Key> &compare) const
+};
+
+class MovieByRating : public AVLNode<Movie>
 {
-    return this->m_key == compare.m_key;
-}
+    int compareNodes(const AVLNode<Movie> &other) const override
+    {
+        const MovieByRating *derived = dynamic_cast<const MovieByRating *>(&other);
+        if (derived != nullptr)
+        {
+            int ratingDifference;
+            ratingDifference = this->m_data->getMovieRating() - derived->getData()->getMovieRating();
+            if (ratingDifference > 0)
+            {
+                return 1;
+            }
+            if (ratingDifference < 0)
+            {
+                return -1;
 
-template<class Data, class Key>
-bool AVLNode<Data, Key>::operator>(AVLNode<Data, Key> &compare) const
-{
-    return this->m_key>compare.m_key;
-}
+            } else
+            {
+                int viewDifference;
+                viewDifference = this->m_data->getMovieViews() - derived->getData()->getMovieViews();
+                if (viewDifference > 0)
+                {
+                    return 1;
 
-template<class Data, class Key>
-AVLNode<Data, Key> *AVLNode<Data, Key>::getLeftChild() const
+                }
+                if (viewDifference < 0)
+                {
+                    return -1;
+                } else
+                {
+                    return derived->getData()->getMovieId() - this->m_data->getId();
+                }
+            }
+        } else
+        {
+            throw AVL_Node_Exceptions("The Data Types Aren't comparable");
+        }
+    }
+};
+
+
+template<class Data>
+AVLNode<Data> *AVLNode<Data>::getLeftChild() const
 {
     return m_leftChild;
 }
 
-template<class Data, class Key>
-AVLNode<Data, Key> *AVLNode<Data, Key>::getRightChild() const
+template<class Data>
+AVLNode<Data> *AVLNode<Data>::getRightChild() const
 {
     return m_rightChild;
 }
 
-template<class Data, class Key>
-AVLNode<Data, Key> *AVLNode<Data, Key>::getParent() const
+template<class Data>
+AVLNode<Data> *AVLNode<Data>::getParent() const
 {
     return m_parent;
 }
 
-template<class Data, class Key>
-int AVLNode<Data, Key>::getBalanceFactor() const
+template<class Data>
+int AVLNode<Data>::getBalanceFactor() const
 {
     return m_balanceFactor;
 }
 
-template<class Data, class Key>
-int AVLNode<Data, Key>::getHeight() const
+template<class Data>
+int AVLNode<Data>::getHeight() const
 {
     return m_height;
 }
 
-template<class Data, class Key>
-Key *AVLNode<Data, Key>::getKey() const
-{
-    return m_key;
-}
-
-template<class Data, class Key>
-Data *AVLNode<Data, Key>::getData() const
+template<class Data>
+Data *AVLNode<Data>::getData() const
 {
     return m_data;
 }
 
-template<class Data, class Key>
-AVLNode<Data, Key>::AVLNode(Data *data, Key *key)
+template<class Data>
+AVLNode<Data>::AVLNode(Data *data)
 {
 /*check if key or data is valid*/
-    if (key == NULL)
-    {
-        throw (AVL_Node_Exceptions("NULL KEY"));
-    }
     if (data == NULL)
     {
         throw (AVL_Node_Exceptions("NULL Data"));
@@ -173,14 +200,9 @@ AVLNode<Data, Key>::AVLNode(Data *data, Key *key)
 
 }
 
-template<class Data, class Key>
-AVLNode<Data, Key>::~AVLNode()
+template<class Data>
+AVLNode<Data>::~AVLNode()
 {
-    if (m_key != NULL)
-    {
-        delete this->m_key;
-        m_key = NULL;
-    }
     if (m_data != NULL)
     {
         delete this->data;
@@ -188,8 +210,8 @@ AVLNode<Data, Key>::~AVLNode()
     }
 }
 
-template<class Data, class Key>
-void AVLNode<Data, Key>::updateParameters()
+template<class Data>
+void AVLNode<Data>::updateParameters()
 {
     if (this->m_leftChild != NULL && this->m_rightChild != NULL)
     {
@@ -235,8 +257,8 @@ void AVLNode<Data, Key>::updateParameters()
     }
 }
 
-template<class Data, class Key>
-void AVLNode<Data, Key>::setRightChild(AVLNode *node)
+template<class Data>
+void AVLNode<Data>::setRightChild(AVLNode *node)
 {
     this->m_rightChild = node;
     if (node != NULL)
@@ -246,8 +268,8 @@ void AVLNode<Data, Key>::setRightChild(AVLNode *node)
     updateParameters();
 }
 
-template<class Data, class Key>
-void AVLNode<Data, Key>::setLeftChild(AVLNode *node)
+template<class Data>
+void AVLNode<Data>::setLeftChild(AVLNode *node)
 {
     this->m_leftChild = node;
     if (node != NULL)
@@ -257,8 +279,8 @@ void AVLNode<Data, Key>::setLeftChild(AVLNode *node)
     updateParameters();
 }
 
-template<class Data, class Key>
-void AVLNode<Data, Key>::setParent(AVLNode *node)
+template<class Data>
+void AVLNode<Data>::setParent(AVLNode *node)
 {
     this->m_parent = node;
     updateParameters();
