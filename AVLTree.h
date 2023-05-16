@@ -43,7 +43,7 @@ public:
             Data Find(const Key &key);
             bool ElementInTree(const Key &key);
 
-  };
+};
             ////////////////////// Implementations for private//////////////
 
 template <class Key ,class Data>
@@ -174,6 +174,11 @@ AVLNode<Key,Data> *AVLtree<Key,Data>::InsertNode(const Key &key, const Data &dat
     node->updateHeight();
     node = MakeBalance(node);
     return node;
+}
+template <class Key ,class Data>
+AVLNode<Key,Data> *AVLtree<Key,Data>::DeleteNode(const Key &key, AVLNode<Key, Data> *node)
+{
+    
 }
 ////////////////////// Implementations for public//////////////
 
