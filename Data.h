@@ -43,10 +43,10 @@ private:
     int m_aloneViews[5];
     int m_groupViews[5];
     bool m_vip;
-    bool m_inGroup;
+    int m_groupId;
 
 public:
-    User(int Id, bool Status) : Data(Id), m_vip(Status), m_inGroup(false)
+    User(int Id, bool Status) : Data(Id), m_vip(Status), m_groupId(-1)
     {
         for (int i = 0; i < 5; i++)
         {
