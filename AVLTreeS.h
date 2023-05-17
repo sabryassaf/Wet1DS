@@ -5,46 +5,6 @@ class AVLTree
 {
 private:
     AVLNode<Data>* m_root;
-
-public:
-    AVLTree() : m_root(nullptr) {}
-
-    ~AVLTree()
-    {
-        clear();
-    }
-
-    void insert(Data* data)
-    {
-        if (m_root == nullptr)
-        {
-            m_root = new AVLNode<Data>(data);
-        }
-        else
-        {
-            insertRecursive(data, m_root);
-        }
-    }
-
-    bool remove(Data* data)
-    {
-        if (m_root == nullptr)
-        {
-            return false;
-        }
-        else
-        {
-            return removeRecursive(data, m_root);
-        }
-    }
-
-    void clear()
-    {
-        clearRecursive(m_root);
-        m_root = nullptr;
-    }
-
-private:
     void insertRecursive(Data* data, AVLNode<Data>* node)
     {
         int compareResult = node->compareNodes(*data);
@@ -337,4 +297,43 @@ private:
         node->setLeftChild(leftChild->getRightChild());
         leftChild->setRightChild(node);
     }
+public:
+    AVLTree() : m_root(nullptr) {}
+
+    ~AVLTree()
+    {
+        clear();
+    }
+
+    void insert(Data* data)
+    {
+        if (m_root == nullptr)
+        {
+            m_root = new AVLNode<Data>(data);
+        }
+        else
+        {
+            insertRecursive(data, m_root);
+        }
+    }
+
+    bool remove(Data* data)
+    {
+        if (m_root == nullptr)
+        {
+            return false;
+        }
+        else
+        {
+            return removeRecursive(data, m_root);
+        }
+    }
+
+    void clear()
+    {
+        clearRecursive(m_root);
+        m_root = nullptr;
+    }
+
+
 };

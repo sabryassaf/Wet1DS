@@ -11,4 +11,4 @@ add_executable(Wet1
         StreamingDBa1.cpp
         StreamingDBa1.h
         wet1util.h AVLTree.h
-        Key.h)
+        Key.h "Testing.cpp")
