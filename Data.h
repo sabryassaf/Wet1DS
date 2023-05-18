@@ -57,6 +57,21 @@ public:
 
     ~User() = default;
 
+    bool getVipStatus() const
+    {
+        return m_vip;
+    }
+
+    int getGroupId() const
+    {
+        return m_groupId;
+    }
+
+    void updateAloneViews(Genre genre)
+    {
+        m_aloneViews[static_cast<int>(genre)] ++;
+        m_aloneViews[4] ++;
+    }
 };
 
 class Movie : public Data
@@ -66,14 +81,50 @@ private:
     Genre m_movieGenre;
     int m_views;
     bool m_vipStatus;
+    Movie *m_movieNodeById;
+    Movie *m_movieNodeByRatingInNone;
+    Movie *m_movieNodeByRatingGenre;
 public:
     Movie(int MovieId, Genre genre, int Views, bool VipStatus) : Data(MovieId), m_rating(0), m_movieGenre(genre),
-                                                                 m_views(Views), m_vipStatus(VipStatus)
+                                                                 m_views(Views), m_vipStatus(VipStatus),
+                                                                 m_movieNodeById(
+                                                                         nullptr), m_movieNodeByRatingGenre(nullptr),
+                                                                 m_movieNodeByRatingInNone(nullptr)
     {
 
     }
 
     ~Movie() = default;
+
+    void setMovieIdNode(Movie &NodeId)
+    {
+        m_movieNodeById = &NodeId;
+    }
+
+    void setMovieRatingNoneNode(Movie &NodeId)
+    {
+        m_movieNodeByRatingInNone = &NodeId;
+    }
+
+    void setMovieRatingGenreNode(Movie &NodeId)
+    {
+        m_movieNodeByRatingGenre = &NodeId;
+    }
+
+    Movie *getMovieNodeById() const
+    {
+        return m_movieNodeById;
+    }
+
+    Movie *getMovieNodeByRatingNone() const
+    {
+        return m_movieNodeByRatingInNone;
+    }
+
+    Movie *getMovieNodeByRatingGenre() const
+    {
+        return m_movieNodeByRatingGenre;
+    }
 
     int getMovieRating() const
     {
