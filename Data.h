@@ -69,9 +69,12 @@ public:
 
     void updateAloneViews(Genre genre)
     {
-        m_aloneViews[static_cast<int>(genre)] ++;
-        m_aloneViews[4] ++;
+        m_aloneViews[static_cast<int>(genre)]++;
+        m_aloneViews[4]++;
     }
+
+    void updateGroupViews(Genre genre)
+    {};
 };
 
 class Movie : public Data

@@ -2,7 +2,7 @@
 
 streaming_database::streaming_database()
 {
-	// TODO: Your code goes here
+	UserIdTree = AVLNode
 }
 
 streaming_database::~streaming_database()
