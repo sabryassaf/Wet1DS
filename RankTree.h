@@ -71,13 +71,21 @@ template <class Key ,class Data>
 AVLNode<Key,Data> *RankTree<Key,Data>::RotateRight(AVLNode<Key,Data> *node)
 {
     AVLNode<Key,Data>* newnode = node->getLeftChild();
+    node->setLeftChild(newnode->getRightChild());
     if (newnode->getRightChild() != nullptr){
         newnode->getRightChild()->setParent(node);
     }
-    node->setLeftChild(newnode->getRightChild());
     newnode->setRightChild(node);
     newnode->setParent( node->getParent());
+    if (node->getParent() != nullptr) {
+        if (node->getParent()->getLeftChild() == node) {
+            node->getParent()->setLeftChild(newnode);
+        } else {
+            node->getParent()->setRightChild(newnode);
+        }
+    }
     node->setParent(newnode);
+//    node->setParent(newnode);
     node->updateParameters();
     newnode->updateParameters();
     return newnode;
@@ -87,13 +95,21 @@ template <class Key ,class Data>
 AVLNode<Key,Data> *RankTree<Key,Data>::RotateLeft(AVLNode<Key,Data> *node)
 {
     AVLNode<Key,Data>* newnode = node->getRightChild();
+    node->setRightChild(newnode->getLeftChild());
     if (newnode->getRightChild() != nullptr){
         newnode->getLeftChild()->setParent(node);
     }
-    node->setRightChild(newnode->getLeftChild());
     newnode->setLeftChild(node);
     newnode->setParent(node->getParent());
+    if (node->getParent() != nullptr) {
+        if (node->getParent()->getLeftChild() == node) {
+            node->getParent()->setLeftChild(newnode);
+        } else {
+            node->getParent()->setRightChild(newnode);
+        }
+    }
     node->setParent(newnode);
+//    node->setParent(newnode);
     node->updateParameters();
     newnode->updateParameters();
     return newnode;
@@ -128,22 +144,22 @@ AVLNode<Key,Data> *RankTree<Key,Data>:: MakeBalance(AVLNode<Key,Data>* node)
     int BalanceFactor = RankTree<Key,Data>::BalanceFactor(node);
     if (BalanceFactor == 2)
     {
-        if(RankTree<Key,Data>::BalanceFactor(node->getLeftChild()) >= 0)
+        if(RankTree<Key,Data>::BalanceFactor(node->getLeftChild()) > 0)
         {
             return RollingLL(node);
         }
-        else if (RankTree<Key,Data>::BalanceFactor(node->getLeftChild()) == -1)
+        else if (RankTree<Key,Data>::BalanceFactor(node->getLeftChild()) < 0)
         {
             return RollingLR(node);
         }
     }
     else if (BalanceFactor == -2)
     {
-        if(RankTree<Key,Data>::BalanceFactor(node->getRightChild()) == 1)
+        if(RankTree<Key,Data>::BalanceFactor(node->getRightChild()) > 0)
         {
             return RollingRL(node);
         }
-        else if (RankTree<Key,Data>::BalanceFactor(node->getRightChild()) <= 0)
+        else if (RankTree<Key,Data>::BalanceFactor(node->getRightChild()) < 0)
         {
             return RollingRR(node);
         }
