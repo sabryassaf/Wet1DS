@@ -258,8 +258,8 @@ void AVLtree<Key,Data>::DeleteTree(AVLNode<Key,Data> *node)
     {
         return;
     }
-    DeleteTree(node->m_rightChild);
-    DeleteTree(node->m_leftChild);
+    DeleteTree(node->getRightChild());
+    DeleteTree(node->getLeftChild());
     delete node;
 }
 

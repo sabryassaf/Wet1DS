@@ -2,7 +2,9 @@
 
 streaming_database::streaming_database()
 {
-	UserIdTree = AVLNode
+	AVLtree<int,User> * UserIdTree = new(AVLtree<int,User>);
+
+
 }
 
 streaming_database::~streaming_database()

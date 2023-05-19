@@ -183,7 +183,7 @@ AVLNode<Key, Data>::~AVLNode()
     }
     if (m_data != nullptr)
     {
-        delete this->data;
+        delete this->getData();
         m_data = nullptr;
     }
 }
