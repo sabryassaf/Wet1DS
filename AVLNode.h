@@ -154,69 +154,35 @@ bool AVLNode<Key, Data>::operator>(AVLNode<Key, Data> &compare) const
 template<class Key, class Data>
 AVLNode<Key, Data> *AVLNode<Key, Data>::getLeftChild() const
 {
-    if (this== nullptr)
-    {
-        return 0;
-    }
-    else{
-        return m_leftChild;
-    }
+    return m_leftChild;
 }
 
 template<class Key, class Data>
 AVLNode<Key, Data> *AVLNode<Key, Data>::getRightChild() const
 {
-    if (this== nullptr)
-    {
-        return 0;
-    }
-    else{
     return m_rightChild;
-    }
 }
 
 template<class Key, class Data>
 AVLNode<Key, Data> *AVLNode<Key, Data>::getParent() const {
-    if (this == nullptr) {
-        return 0;
-    } else {
-        return m_parent;
-    }
+    return m_parent;
 }
 template<class Key, class Data>
 int AVLNode<Key, Data>::getBalanceFactor() const
 {
-    if (this== nullptr)
-    {
-        return 0;
-    }
-    else{
-        return m_balanceFactor;
-    }
+    return m_balanceFactor;
 }
 
 template<class Key, class Data>
 int AVLNode<Key, Data>::getHeight() const
 {
-    if (this== nullptr)
-    {
-        return 0;
-    }
-    else{
-        return m_height;
-    }
+    return m_height;
 }
 
 template<class Key, class Data>
 Key AVLNode<Key, Data>::getKey() const
 {
-    if (this== nullptr)
-    {
-        return -1;
-    }
-    else{
-        return m_key;
-    }
+    return m_key;
 }
 
 template<class Key, class Data>
@@ -237,15 +203,15 @@ AVLNode<Key, Data>::AVLNode(Key key, Data *data)
     {
         throw (AVL_Node_Exceptions("NULL Data"));
     }
-    Data *temp = new Data();
-    if (temp == nullptr)
-    {
-        throw (AVL_Node_Exceptions("ALLOCATION_ERROR"));
-    }
+    //Data *temp = new Data();
+    //if (temp == nullptr)
+    //{
+      //  throw (AVL_Node_Exceptions("ALLOCATION_ERROR"));
+    //}
     /*copy the data */
-    *temp = *data;
+    //*temp = *data;
     this->m_key = key;
-    this->m_data = temp;
+    this->m_data = data;
     this->m_leftChild = nullptr;
     this->m_rightChild = nullptr;
     this->m_parent = nullptr;

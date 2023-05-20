@@ -306,19 +306,23 @@ AVLNode<Key, Data> *RankTree<Key, Data>::FindNode(const Key &key, AVLNode<Key, D
     {
         return nullptr;
     }
+
     if (key == node->getKey())
     {
         return node;
-    } else if (key > node->getKey())
+    }
+    
+    if (key > node->getKey())
     {
         return FindNode(key, node->getRightChild());
-    } else if (key < node->getKey())
+    }
+    
+    if (key < node->getKey())
     {
         return FindNode(key, node->getLeftChild());
-    } else
-    {
-        return nullptr;
     }
+
+    return nullptr;
 }
 
 template<class Key, class Data>
@@ -328,6 +332,7 @@ void RankTree<Key, Data>::DeleteTree(AVLNode<Key, Data> *node)
     {
         return;
     }
+
     DeleteTree(node->getRightChild());
     DeleteTree(node->getLeftChild());
     delete node;
@@ -336,14 +341,13 @@ void RankTree<Key, Data>::DeleteTree(AVLNode<Key, Data> *node)
 ////////////////////// Implementations for public//////////////
 
 template<class Key, class Data>
-StatusType RankTree<Key, Data>::Insert(Key &key, Data &data
-)
+StatusType RankTree<Key, Data>::Insert(Key &key, Data &data)
 {
-
     if (this->FindNode(key, root))
     {
         return StatusType::FAILURE;
     }
+
     AVLNode<Key, Data> *test;
     test = InsertNode(key, data, root);
     if (test == nullptr)
@@ -384,16 +388,11 @@ template<class Key, class Data>
 bool RankTree<Key, Data>::ElementInTree(const Key &key)
 {
     if (root == nullptr)
-    {//tree empty
-        return false;
-    }
-    if (this->FindNode(key, root) == nullptr)
     {
         return false;
-    } else
-    {
-        return true;
     }
+    
+    return this->FindNode(key, root) != nullptr;
 }
 
 template<class Key, class Data>
