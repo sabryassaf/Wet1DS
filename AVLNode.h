@@ -316,6 +316,11 @@ void AVLNode<Key, Data>::updateParameters()
         case NodeType::LEAF:
             this->m_height = 0;
             this->m_balanceFactor = 0;
+            break;
+        default:
+            this->m_height=0;
+            this->m_balanceFactor=0;
+            break;
     }
 }
 

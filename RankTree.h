@@ -96,8 +96,8 @@ AVLNode<Key,Data> *RankTree<Key,Data>::RotateLeft(AVLNode<Key,Data> *node)
 {
     AVLNode<Key,Data>* newnode = node->getRightChild();
     node->setRightChild(newnode->getLeftChild());
-    if (newnode->getRightChild() != nullptr){
-        newnode->getLeftChild()->setParent(node);
+    if (newnode->getLeftChild() != nullptr){
+        newnode->getRightChild()->setParent(node);
     }
     newnode->setLeftChild(node);
     newnode->setParent(node->getParent());
@@ -141,25 +141,25 @@ AVLNode<Key,Data>  *RankTree<Key,Data>::RollingLR(AVLNode<Key,Data>* node)
 template <class Key ,class Data>
 AVLNode<Key,Data> *RankTree<Key,Data>:: MakeBalance(AVLNode<Key,Data>* node)
 {
-    int BalanceFactor = RankTree<Key,Data>::BalanceFactor(node);
-    if (BalanceFactor == 2)
+    int BF = node->getBalanceFactor();
+    if (BF == 2)
     {
-        if(RankTree<Key,Data>::BalanceFactor(node->getLeftChild()) > 0)
+        if(node->getLeftChild()->getBalanceFactor() > 0)
         {
             return RollingLL(node);
         }
-        else if (RankTree<Key,Data>::BalanceFactor(node->getLeftChild()) < 0)
+        else if (node->getLeftChild()->getBalanceFactor() < 0)
         {
             return RollingLR(node);
         }
     }
-    else if (BalanceFactor == -2)
+    else if (BF == -2)
     {
-        if(RankTree<Key,Data>::BalanceFactor(node->getRightChild()) > 0)
+        if(node->getRightChild()->getBalanceFactor() > 0)
         {
             return RollingRL(node);
         }
-        else if (RankTree<Key,Data>::BalanceFactor(node->getRightChild()) < 0)
+        else if (node->getRightChild()->getBalanceFactor() < 0)
         {
             return RollingRR(node);
         }
@@ -167,46 +167,80 @@ AVLNode<Key,Data> *RankTree<Key,Data>:: MakeBalance(AVLNode<Key,Data>* node)
     root->setParent(nullptr);
     return node;
 }
-template <class Key ,class Data>
-AVLNode<Key,Data> *RankTree<Key,Data>::InsertNode( Key &key,  Data &data
-                                                  , AVLNode<Key,Data> *node)
-{
-    if (node == nullptr) //tree is empty
-    {
-        AVLNode<Key,Data>* newElement = new AVLNode< Key,Data>(key,&data);
-        if (newElement == nullptr){
+template <class Key, class Data>
+AVLNode<Key, Data>* RankTree<Key, Data>::InsertNode(Key& key, Data& data, AVLNode<Key, Data>* node) {
+    if (node == nullptr) {
+        AVLNode<Key, Data>* newElement = new AVLNode<Key, Data>(key, &data);
+        if (newElement == nullptr) {
             return nullptr;
         }
         newElement->setKey(key);
         newElement->setData(data);
         newElement->setHeight(0);
-        if (root == nullptr){
+        if (root == nullptr) {
             root = newElement;
         }
         return newElement;
-    }
-    else //tree not empty
-    {
-        if(key > node->getKey())
-        {
-            AVLNode<Key,Data>* newNode = InsertNode(key, data,node->getRightChild());
-            newNode->setParent(node);
+    } else {
+        if (key > node->getKey()) {
+            AVLNode<Key, Data>* newNode = InsertNode(key, data, node->getRightChild());
             node->setRightChild(newNode);
-            node->getRightChild()->setParent(node);
-        }
-        else if(key < node->getKey())
-        {
-            AVLNode<Key,Data>* newNode = InsertNode(key, data,node->getLeftChild()
-            );
-            newNode->setParent(node);
+            if (newNode != nullptr) {
+                newNode->setParent(node);
+            }
+        } else if (key < node->getKey()) {
+            AVLNode<Key, Data>* newNode = InsertNode(key, data, node->getLeftChild());
             node->setLeftChild(newNode);
-            node->getLeftChild()->setParent(node);
+            if (newNode != nullptr) {
+                newNode->setParent(node);
+            }
         }
     }
     node->updateParameters();
     node = MakeBalance(node);
     return node;
 }
+
+//template <class Key ,class Data>
+//AVLNode<Key,Data> *RankTree<Key,Data>::InsertNode( Key &key,  Data &data
+//                                                  , AVLNode<Key,Data> *node)
+//{
+//    if (node == nullptr) //tree is empty
+//    {
+//        AVLNode<Key,Data>* newElement = new AVLNode< Key,Data>(key,&data);
+//        if (newElement == nullptr){
+//            return nullptr;
+//        }
+//        newElement->setKey(key);
+//        newElement->setData(data);
+//        newElement->setHeight(0);
+//        if (root == nullptr){
+//            root = newElement;
+//        }
+//        return newElement;
+//    }
+//    else //tree not empty
+//    {
+//        if(key > node->getKey())
+//        {
+//            AVLNode<Key,Data>* newNode = InsertNode(key, data,node->getRightChild());
+//            newNode->setParent(node);
+//            node->setRightChild(newNode);
+////            node->getRightChild()->setParent(node);
+//        }
+//        else if(key < node->getKey())
+//        {
+//            AVLNode<Key,Data>* newNode = InsertNode(key, data,node->getLeftChild()
+//            );
+//            newNode->setParent(node);
+//            node->setLeftChild(newNode);
+////            node->getLeftChild()->setParent(node);
+//        }
+//    }
+//    node->updateParameters();
+//    node = MakeBalance(node);
+//    return node;
+//}
 template <class Key ,class Data>
 AVLNode<Key,Data> *RankTree<Key,Data>::DeleteNode(const Key &key, AVLNode<Key, Data> *node)
 {
@@ -302,7 +336,7 @@ StatusType RankTree<Key,Data>::Insert( Key &key,  Data &data
 )
 {
 
-    if (this->Find(key))
+    if (this->FindNode(key,root))
     {
         return StatusType::FAILURE;
     }
