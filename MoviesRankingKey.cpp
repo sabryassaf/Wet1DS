@@ -17,8 +17,8 @@ public:
     }
 };
 
-
-MoviesRankingKey:: MoviesRankingKey(int id, int views) : m_id(id), m_rating(0), m_viewers(views)
+MoviesRankingKey:: MoviesRankingKey(int id, int views) : m_id(id),m_rating(0),m_viewers(views){}
+MoviesRankingKey:: MoviesRankingKey(int id,int rating,int views) : m_id(id), m_rating(rating),m_viewers(views)
 {}
 
 bool MoviesRankingKey:: operator<(const MoviesRankingKey &other) const

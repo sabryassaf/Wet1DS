@@ -12,7 +12,8 @@ private:
     int m_rating;
     int m_viewers;
 public:
-    MoviesRankingKey(int m_id,int m_viewers);
+    MoviesRankingKey(int id,int viewers);
+    MoviesRankingKey(int id,int rating,int viewers);
     MoviesRankingKey() = default;
     MoviesRankingKey(const MoviesRankingKey& copy) =default;
     MoviesRankingKey& operator=(const MoviesRankingKey& copy) =default;
