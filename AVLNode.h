@@ -260,8 +260,7 @@ AVLNode<Key, Data>::~AVLNode()
 {
     if (m_data != nullptr)
     {
-        //free(this->getData());
-        //delete this->getData();
+        delete this->getData();
         m_data = nullptr;
     }
 }
