@@ -8,7 +8,7 @@
 #include <iostream>
 #include "AVLNode.h"
 #include "wet1util.h"
-#include "Data.h"
+//#include "Data.h"
 
 template<class Key, class Data>
 class RankTree
