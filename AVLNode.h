@@ -232,12 +232,22 @@ void AVLNode<Data, Key>::updateParameters()
         case NodeType::LEAF:
             this->m_height = 1;
             this->m_balanceFactor = 0;
+            break;
+        default:
+            this->m_height=0;
+            this->m_balanceFactor=0;
+            break;
     }
 }
 
 template<class Data, class Key>
 void AVLNode<Data, Key>::setRightChild(AVLNode *node)
 {
+    if (node== nullptr){
+        m_rightChild = nullptr;
+        updateParameters();
+        return;
+    }
     this->m_rightChild = node;
     if (node != NULL)
     {
@@ -249,6 +259,11 @@ void AVLNode<Data, Key>::setRightChild(AVLNode *node)
 template<class Data, class Key>
 void AVLNode<Data, Key>::setLeftChild(AVLNode *node)
 {
+    if (node== nullptr){
+        m_leftChild = nullptr;
+        updateParameters();
+        return;
+    }
     this->m_leftChild = node;
     if (node != NULL)
     {
