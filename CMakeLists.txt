@@ -12,5 +12,5 @@ include_directories(.)
 #        StreamingDBa1.h
 #        wet1util.h AVLTree.h
 #        Key.h)
-add_executable(RankTree.h rankTreeTester.cpp run_test.sh AVLNode.h)
+add_executable(Wet1 RankTree.h main_ut.cpp AVLNode.h)
 

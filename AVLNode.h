@@ -130,14 +130,7 @@ void AVLNode<Key, Data>::setKey(Key key)
 template<class Key, class Data>
 void AVLNode<Key, Data>::setData(Data & data)
 {
-    if (std::is_same<Data, int>::value){
-        this->m_data = &data;
-        return;
-    }
-    else{
-        this->m_data = new Data(data);
-        return;
-    }
+    this->m_data = new Data(data);
 }
 
 template<class Key, class Data>
@@ -267,7 +260,8 @@ AVLNode<Key, Data>::~AVLNode()
 {
     if (m_data != nullptr)
     {
-        delete this->getData();
+        //free(this->getData());
+        //delete this->getData();
         m_data = nullptr;
     }
 }
