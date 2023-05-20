@@ -273,13 +273,20 @@ AVLNode<Key, Data> *RankTree<Key, Data>::DeleteNode(const Key &key, AVLNode<Key,
                 tempNode = node->getRightChild();
             }
             tempNode->setParent(node->getParent());
+            if (root == node) {
+                root = tempNode;
+            }
+
             delete node;
             node = tempNode;
         } else //no sons
         {
+            if (root == node) {
+                root = nullptr;
+            }
+
             delete node;
-            node = nullptr;
-            return node;
+            return nullptr;
         }
     } else if (node->getKey() < key)
     {

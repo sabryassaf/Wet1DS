@@ -10,7 +10,7 @@ int main() {
 	tree.Insert(a, a);
 	tree.Insert(b, b);
 	tree.Insert(c, c);
-	tree.Remove(b);
+	tree.Remove(a);
 
 	return 0;
 }
