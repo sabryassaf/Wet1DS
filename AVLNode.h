@@ -327,6 +327,11 @@ void AVLNode<Key, Data>::updateParameters()
 template<class Key, class Data>
 void AVLNode<Key, Data>::setRightChild(AVLNode *node)
 {
+    if (node== nullptr){
+        m_rightChild = nullptr;
+        updateParameters();
+        return;
+    }
     this->m_rightChild = node;
     if (node != nullptr)
     {
@@ -338,6 +343,11 @@ void AVLNode<Key, Data>::setRightChild(AVLNode *node)
 template<class Key, class Data>
 void AVLNode<Key, Data>::setLeftChild(AVLNode *node)
 {
+    if (node== nullptr){
+        m_leftChild = nullptr;
+        updateParameters();
+        return;
+    }
     this->m_leftChild = node;
     if (node != nullptr)
     {

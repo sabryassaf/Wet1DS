@@ -116,24 +116,24 @@ AVLNode<Key,Data> *RankTree<Key,Data>::RotateLeft(AVLNode<Key,Data> *node)
 
 }
 template <class Key ,class Data>
-AVLNode<Key,Data>  *RankTree<Key,Data>::RollingRR(AVLNode<Key,Data>* node){
+AVLNode<Key,Data>  *RankTree<Key,Data>::RollingLL(AVLNode<Key,Data>* node){
     return RotateRight(node);
 }
 
 template <class Key ,class Data>
-AVLNode<Key,Data>  *RankTree<Key,Data>::RollingLL(AVLNode<Key,Data>* node){
+AVLNode<Key,Data>  *RankTree<Key,Data>::RollingRR(AVLNode<Key,Data>* node){
     return RotateLeft(node);
 }
 
 template <class Key ,class Data>
-AVLNode<Key,Data>  *RankTree<Key,Data>::RollingLR(AVLNode<Key,Data>* node)
+AVLNode<Key,Data>  *RankTree<Key,Data>::RollingRL(AVLNode<Key,Data>* node)
 {
     node->setRightChild(RotateRight(node->getRightChild()));
     return RotateLeft(node);
 }
 
 template <class Key ,class Data>
-AVLNode<Key,Data>  *RankTree<Key,Data>::RollingRL(AVLNode<Key,Data>* node)
+AVLNode<Key,Data>  *RankTree<Key,Data>::RollingLR(AVLNode<Key,Data>* node)
 {    node->setLeftChild(RotateLeft(node->getLeftChild()));
     return RotateRight(node);
 }
