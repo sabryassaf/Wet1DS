@@ -44,6 +44,8 @@ public:
     StatusType Remove(const Key &key);
     Data Find(const Key &key);
     bool ElementInTree(const Key &key);
+    void InOrderArray(Data* InOrderArray) const;
+
 
 };
 ////////////////////// Implementations for private//////////////
@@ -140,9 +142,9 @@ AVLNode<Key,Data> *AVLtree<Key,Data>:: MakeBalance(AVLNode<Key,Data>* node)
 template <class Key ,class Data>
 AVLNode<Key,Data> *AVLtree<Key,Data>::InsertNode(const Key &key, const Data &data, AVLNode<Key,Data> *node)
 {
-    if (node == nullptr) //tree is empty
+    if (node == nullptr) //tree is empty (we reached appropriate place)
     {
-        AVLNode<Key,Data>* newElement = new AVLNode<Key,Data>;
+        AVLNode<Key,Data>* newElement = new AVLNode<Key,Data>; //making object to add to the tree
         if (newElement == nullptr){
             return nullptr;
         }
@@ -154,11 +156,11 @@ AVLNode<Key,Data> *AVLtree<Key,Data>::InsertNode(const Key &key, const Data &dat
         }
         return newElement;
     }
-    else //tree not empty
+    else //tree not empty - finding appropriate place
     {
-        if(key > node->m_key)
+        if(key > node->m_key) //we should put our new node on the right side of the given tree
         {
-            AVLNode<Key,Data>* newNode = InsertNode(key, data,node->m_rightChild);
+            AVLNode<Key,Data>* newNode = InsertNode(key, data,node->m_rightChild); //newnode is the right subtree
             newNode->m_parent = node;
             node->m_rightChild = newNode;
             node->m_rightChild->m_parent= node;
@@ -258,8 +260,8 @@ void AVLtree<Key,Data>::DeleteTree(AVLNode<Key,Data> *node)
     {
         return;
     }
-    DeleteTree(node->m_rightChild);
-    DeleteTree(node->m_leftChild);
+    DeleteTree(node->getRightChild());
+    DeleteTree(node->getLeftChild());
     delete node;
 }
 
