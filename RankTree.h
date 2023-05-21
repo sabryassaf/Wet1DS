@@ -182,21 +182,21 @@ template<class Key, class Data>
 AVLNode<Key, Data> *RankTree<Key, Data>::MakeBalance(AVLNode<Key, Data> *node)
 {
     int BF = node->getBalanceFactor();
-    if (BF == 2)
+    if (BF > 1)
     {
-        if (node->getLeftChild()->getBalanceFactor() > 0)
+        if (node->getLeftChild()->getBalanceFactor() >= 0)
         {
             return RollingLL(node);
-        } else if (node->getLeftChild()->getBalanceFactor() <= 0)
+        } else
         {
             return RollingLR(node);
         }
-    } else if (BF == -2)
+    } else if (BF < -1)
     {
         if (node->getRightChild()->getBalanceFactor() > 0)
         {
             return RollingRL(node);
-        } else if (node->getRightChild()->getBalanceFactor() <= 0)
+        } else
         {
             return RollingRR(node);
         }
