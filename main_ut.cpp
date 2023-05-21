@@ -22,8 +22,15 @@ int main() {
     tree.Insert(k,k);
     tree.Insert(h,h);
     tree.Insert(hg,hg);
-    tree.Remove(c);
-    tree.Remove(d);
+    int* arr = new int[tree.getSize()];
+    //tree.BuildInOrderArray(arr);
+    tree.BuildInOrderArray(arr);
+    for (int i = 0; i < tree.getSize(); i++){
+        std::cout << arr[i] << " " << std::endl;
+    }
+
+    //tree.Remove(c);
+    //tree.Remove(d);
 //    tree.Remove(b);
 //    tree.Remove(k);
 //    tree.Insert(k,k);

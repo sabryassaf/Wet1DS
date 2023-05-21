@@ -6,7 +6,7 @@
 #define WET1_DATA_H
 
 #include "wet1util.h"
-#include "AVLTree.h"
+#include "RankTree.h"
 
 class DATA_Type_Exceptions : public std::exception
 {
@@ -198,7 +198,7 @@ private:
     bool m_vip;
     int m_groupId;
     int m_MembersSum;
-    AVLtree<int, UserData *> m_GroupUserstree;
+    RankTree<int, UserData *> m_GroupUserstree;
     int m_arrViewsSum[5] = {0, 0, 0, 0, 0};
 
 public:
@@ -233,7 +233,7 @@ public:
     }
 
 
-    AVLtree<int, UserData *> &getGroupUsers() {
+    RankTree<int, UserData *> &getGroupUsers() {
         return m_GroupUserstree;
     }
 
@@ -250,7 +250,8 @@ public:
             if (arr == nullptr) {
                 return;
             }
-            m_GroupUserstree.InOrderArray(arr);
+
+            m_GroupUserstree.BuildInOrderArray(arr);
             for (int i = 0; i < m_MembersSum; i++) {
                 arr[i]->updateGroupViews(movie->getMovieGenre(), m_MembersSum);
 

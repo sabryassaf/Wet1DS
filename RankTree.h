@@ -42,8 +42,7 @@ private:
 
     AVLNode<Key, Data> *FindNode(const Key &key, AVLNode<Key, Data> *node);
 
-    void BuildInOrderArray(AVLNode<Key, Data> *node, Data *InOrderArray);
-
+    void BuildInOrderArrayAux(AVLNode<Key, Data> *node, Data *InOrderArray, int* index);
 
 public:
     void DeleteTree(AVLNode<Key, Data> *node);
@@ -66,13 +65,15 @@ public:
 
     StatusType Remove(const Key &key);
 
-    Data *Find(const Key &key);
+    Data Find(const Key &key);
 
     bool ElementInTree(const Key &key);
 
     AVLNode<Key, Data> *getRoot() const;
 
     void setRoot(AVLNode<Key, Data> *newRoot);
+
+    void BuildInOrderArray(Data *InOrderArray);
 };
 ////////////////////// Implementations for private//////////////
 
@@ -379,7 +380,7 @@ StatusType RankTree<Key, Data>::Remove(const Key &key)
 }
 
 template<class Key, class Data>
-Data *RankTree<Key, Data>::Find(const Key &key)
+Data RankTree<Key, Data>::Find(const Key &key)
 {
     AVLNode<Key, Data> *tmp = FindNode(key, root);
     if (tmp == nullptr)
@@ -404,6 +405,25 @@ template<class Key, class Data>
 int RankTree<Key, Data>::getSize() const
 {
     return size;
+}
+
+template<class Key, class Data>
+void RankTree<Key, Data>::BuildInOrderArrayAux(AVLNode<Key, Data> *node, Data *InOrderArray, int* index)
+{
+    if (node == nullptr){
+        return;
+    }
+
+    BuildInOrderArrayAux(node->getLeftChild(), InOrderArray, index);
+    InOrderArray[(*index)++] = node->getData();
+    BuildInOrderArrayAux(node->getRightChild(), InOrderArray, index);
+}
+
+template<class Key, class Data>
+void RankTree<Key, Data>::BuildInOrderArray(Data *InOrderArray)
+{
+    int index = 0;
+    BuildInOrderArrayAux(root, InOrderArray, &index);
 }
 
 #endif //STREAMINGDBA1_CPP_RankTree_H

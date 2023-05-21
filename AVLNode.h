@@ -52,8 +52,6 @@ public:
 
     ~AVLNode();
 
-    Data *getData();
-
     void setRightChild(AVLNode *node);
 
     void setLeftChild(AVLNode *node);
@@ -72,7 +70,7 @@ public:
 
     Key getKey() const;
 
-    Data *getData() const;
+    Data getData() const;
 
     AVLNode *getLeftChild() const;
 
@@ -186,7 +184,7 @@ Key AVLNode<Key, Data>::getKey() const
 }
 
 template<class Key, class Data>
-Data *AVLNode<Key, Data>::getData() const
+Data AVLNode<Key, Data>::getData() const
 {
     return m_data;
 }
@@ -309,11 +307,5 @@ void AVLNode<Key, Data>::setParent(AVLNode *node)
     this->m_parent = node;
     this->updateParameters();
 }
-
-template<class Key, class Data>
-Data *AVLNode<Key, Data>::getData() {
-    return this->m_data;
-}
-
 
 #endif //WET1_AVLNODE_H
