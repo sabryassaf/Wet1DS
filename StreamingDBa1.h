@@ -16,7 +16,7 @@
 #define STREAMINGDBA1_H_
 
 #include "wet1util.h"
-#include "AVLTree.h"
+#include "RankTree.h"
 #include "Data.h"
 #include "MoviesRankingKey.h"
 class streaming_database {
