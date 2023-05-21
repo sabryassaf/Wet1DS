@@ -133,10 +133,10 @@ void print2DHelper(AVLNode<int,int> *root, int space)
     print2DHelper(root->getRightChild(), space);
 
     // Print current node after space
-    std::cout<<std::endl;
-    for (int i = 10; i < space; i++)
-        std::cout<<" ";
-    std::cout<<root->getData()<<"\n";
+   // std::cout<<std::endl;
+    //for (int i = 10; i < space; i++)
+        //std::cout<<" ";
+    //std::cout<<root->getData()<<"\n";
 
     // Process left_son child
     print2DHelper(root->getLeftChild(), space);
