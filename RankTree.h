@@ -187,7 +187,7 @@ AVLNode<Key, Data> *RankTree<Key, Data>::MakeBalance(AVLNode<Key, Data> *node)
         if (node->getLeftChild()->getBalanceFactor() > 0)
         {
             return RollingLL(node);
-        } else if (node->getLeftChild()->getBalanceFactor() < 0)
+        } else if (node->getLeftChild()->getBalanceFactor() <= 0)
         {
             return RollingLR(node);
         }
@@ -196,7 +196,7 @@ AVLNode<Key, Data> *RankTree<Key, Data>::MakeBalance(AVLNode<Key, Data> *node)
         if (node->getRightChild()->getBalanceFactor() > 0)
         {
             return RollingRL(node);
-        } else if (node->getRightChild()->getBalanceFactor() < 0)
+        } else if (node->getRightChild()->getBalanceFactor() <= 0)
         {
             return RollingRR(node);
         }
@@ -263,7 +263,8 @@ AVLNode<Key, Data> *RankTree<Key, Data>::DeleteNode(const Key &key, AVLNode<Key,
             }
             tempNode->swap(node);
             node->setRightChild(DeleteNode(key, node->getRightChild()));
-        } else if ((node->getLeftChild() == nullptr) || (node->getRightChild() == nullptr)) //ONE CHILD ONLY
+        } else if (((node->getLeftChild() == nullptr) && node->getRightChild()) ||
+                   ((node->getRightChild() == nullptr) && node->getLeftChild())) //ONE CHILD ONLY
         {
             if (node->getLeftChild())
             {
@@ -273,7 +274,8 @@ AVLNode<Key, Data> *RankTree<Key, Data>::DeleteNode(const Key &key, AVLNode<Key,
                 tempNode = node->getRightChild();
             }
             tempNode->setParent(node->getParent());
-            if (root == node) {
+            if (root == node)
+            {
                 root = tempNode;
             }
 
@@ -281,7 +283,8 @@ AVLNode<Key, Data> *RankTree<Key, Data>::DeleteNode(const Key &key, AVLNode<Key,
             node = tempNode;
         } else //no sons
         {
-            if (root == node) {
+            if (root == node)
+            {
                 root = nullptr;
             }
 
@@ -295,8 +298,10 @@ AVLNode<Key, Data> *RankTree<Key, Data>::DeleteNode(const Key &key, AVLNode<Key,
     {
         node->setLeftChild(DeleteNode(key, node->getLeftChild()));
     }
+
     node->updateParameters();
-    return MakeBalance(node);
+    node = MakeBalance(node);
+    return node;
 }
 
 template<class Key, class Data>
@@ -311,12 +316,12 @@ AVLNode<Key, Data> *RankTree<Key, Data>::FindNode(const Key &key, AVLNode<Key, D
     {
         return node;
     }
-    
+
     if (key > node->getKey())
     {
         return FindNode(key, node->getRightChild());
     }
-    
+
     if (key < node->getKey())
     {
         return FindNode(key, node->getLeftChild());
@@ -391,7 +396,7 @@ bool RankTree<Key, Data>::ElementInTree(const Key &key)
     {
         return false;
     }
-    
+
     return this->FindNode(key, root) != nullptr;
 }
 
