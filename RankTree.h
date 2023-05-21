@@ -210,7 +210,7 @@ AVLNode<Key, Data> *RankTree<Key, Data>::InsertNode(Key &key, Data &data, AVLNod
 {
     if (node == nullptr)
     {
-        AVLNode<Key, Data> *newElement = new AVLNode<Key, Data>(key, &data);
+        AVLNode<Key, Data> *newElement = new AVLNode<Key, Data>(key, data);
         if (newElement == nullptr)
         {
             return nullptr;
