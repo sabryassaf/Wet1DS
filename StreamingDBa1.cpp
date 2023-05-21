@@ -255,15 +255,15 @@ int arrSize=0;
 
     switch (genre) {
         case Genre::COMEDY:
-            m_COMEDY.InOrderArray(arr);
+            m_COMEDY.BuildInOrderArray(arr);
         case Genre::DRAMA:
-            m_DRAMA.InOrderArray(arr);
+            m_DRAMA.BuildInOrderArray(arr);
         case Genre::ACTION:
-             m_ACTION.InOrderArray(arr);
+             m_ACTION.BuildInOrderArray(arr);
         case Genre::FANTASY:
-             m_FANTASY.InOrderArray(arr);
+             m_FANTASY.BuildInOrderArray(arr);
         case Genre::NONE:
-             m_AllMoviesRating.InOrderArray(arr);
+             m_AllMoviesRating.BuildInOrderArray(arr);
 
     }
          for(int i=0;i<arrSize;i++){

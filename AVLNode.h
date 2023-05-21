@@ -193,14 +193,6 @@ template<class Key, class Data>
 AVLNode<Key, Data>::AVLNode(Key key, Data data)
 {
 /*check if key or data is valid*/
-    if (key == NULL)
-    {
-        throw (AVL_Node_Exceptions("NULL KEY"));
-    }
-    if (data == NULL)
-    {
-        throw (AVL_Node_Exceptions("NULL Data"));
-    }
     this->m_key = key;
     this->m_data = data;
     this->m_leftChild = nullptr;

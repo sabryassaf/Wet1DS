@@ -18,8 +18,8 @@ public:
     MoviesRankingKey(const MoviesRankingKey& copy);
     MoviesRankingKey& operator=(const MoviesRankingKey& copy) =default;
     ~MoviesRankingKey()=default;
-    bool operator<(const MoviesRankingKey &other) const;
-    bool operator>(const MoviesRankingKey &other) const;
+    bool operator<(MoviesRankingKey &other) const;
+    bool operator>(MoviesRankingKey &other) const;
     int getID()const;
     int getVIEWS()const;
     int getRATINGS()const;

@@ -19,22 +19,19 @@
 #include "RankTree.h"
 #include "Data.h"
 #include "MoviesRankingKey.h"
-class streaming_database {
+
+class streaming_database
+{
 
 private:
-    AVLtree<int,MovieData*> m_AllMoviesId; //the key would be movie id
-    AVLtree<MoviesRankingKey,MovieData*> m_AllMoviesRating; // the key according to ratings
-    AVLtree<MoviesRankingKey,MovieData*>  m_COMEDY;
-    AVLtree<MoviesRankingKey,MovieData*>  m_DRAMA;
-    AVLtree<MoviesRankingKey,MovieData*>  m_ACTION;
-    AVLtree<MoviesRankingKey,MovieData*>  m_FANTASY;
-    AVLtree<int,UserData*> m_AllUsers; //the key would be user id
-    AVLtree<int,GroupData*> m_AllGroups; //the key would be group id
-
-
-
-
-
+    RankTree<int, MovieData *> m_AllMoviesId; //the key would be movie id
+    RankTree<MoviesRankingKey, MovieData *> m_AllMoviesRating; // the key according to ratings
+    RankTree<MoviesRankingKey, MovieData *> m_COMEDY;
+    RankTree<MoviesRankingKey, MovieData *> m_DRAMA;
+    RankTree<MoviesRankingKey, MovieData *> m_ACTION;
+    RankTree<MoviesRankingKey, MovieData *> m_FANTASY;
+    RankTree<int, UserData *> m_AllUsers; //the key would be user id
+    RankTree<int, GroupData *> m_AllGroups; //the key would be group id
 
 public:
     // <DO-NOT-MODIFY> {
@@ -59,7 +56,7 @@ public:
 
     StatusType user_watch(int userId, int movieId);
 
-    StatusType group_watch(int groupId,int movieId);
+    StatusType group_watch(int groupId, int movieId);
 
     output_t<int> get_all_movies_count(Genre genre);
 
@@ -72,7 +69,7 @@ public:
     output_t<int> get_group_recommendation(int groupId);
 
     // } </DO-NOT-MODIFY>
-    StatusType UpdateRatingsMoviesTrees(int movieId,MovieData* movieData, int added_rating,int added_views);
+    StatusType UpdateRatingsMoviesTrees(int movieId, MovieData *movieData, int added_rating, int added_views);
 
 };
 

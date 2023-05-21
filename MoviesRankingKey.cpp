@@ -38,10 +38,18 @@ MoviesRankingKey:: MoviesRankingKey(const MoviesRankingKey& copy){
 
      }
 
-bool MoviesRankingKey:: operator<( const MoviesRankingKey& other) const {
+bool MoviesRankingKey:: operator<(MoviesRankingKey& other) const {
     return ::operator<(*this, other);
 }
 
+bool MoviesRankingKey::operator>(MoviesRankingKey& other) const {
+    return ::operator<(other, *this);
+}
+
+bool operator>(const MoviesRankingKey& movie1,const MoviesRankingKey& movie2)
+{
+    return ::operator<(movie2, movie1);
+}
 
 bool operator<(const MoviesRankingKey& movie1, const MoviesRankingKey& movie2){
 
@@ -58,5 +66,3 @@ bool operator==(const MoviesRankingKey& movie1, const MoviesRankingKey& movie2)
 {
     return ((movie1.getID()==movie2.getID()) && (movie1.getVIEWS()==movie2.getVIEWS()) && (movie1.getRATINGS()==movie2.getRATINGS()));
 }
-
-#include "MoviesRankingKey.h"

@@ -27,10 +27,11 @@ protected:
     int m_id;
 public:
     Data();
+
     Data(int id) : m_id(id)
     {}
 
-    virtual ~Data() = 0;
+    ~Data() = default;
 
     virtual int getId() const
     {
@@ -39,7 +40,8 @@ public:
 };
 
 
-class UserData : public Data {
+class UserData : public Data
+{
 private:
     int m_aloneViews[5];
     int m_groupViews[5];
@@ -50,25 +52,31 @@ private:
 public:
     UserData();
 
-    UserData(int Id, bool Status) : Data(Id), m_vip(Status), m_groupMem(false), m_groupId(-1) {
-        for (int i = 0; i < 5; i++) {
+    UserData(int Id, bool Status) : Data(Id), m_vip(Status), m_groupMem(false), m_groupId(-1)
+    {
+        for (int i = 0; i < 5; i++)
+        {
             m_aloneViews[i] = 0;
             m_groupViews[i] = 0;
         }
     }
 
-    ~UserData() = default;
+    ~UserData()  = default;
 
-    bool getVipStatus() const {
+    bool getVipStatus() const
+    {
         return m_vip;
     }
 
-    int getGroupId() const {
+    int getGroupId() const
+    {
         return m_groupId;
     }
 
-    void updateAloneViews(Genre genre) {
-        switch (genre) {
+    void updateAloneViews(Genre genre)
+    {
+        switch (genre)
+        {
             case Genre::COMEDY:
                 m_aloneViews[0]++;
             case Genre::DRAMA:
@@ -80,29 +88,36 @@ public:
         }
         m_aloneViews[4]++;
     }
-    void updateGroupViews(Genre genre, int groupsize) {
 
-        switch (genre) {
+    void updateGroupViews(Genre genre, int groupsize)
+    {
+
+        switch (genre)
+        {
             case Genre::COMEDY:
-                m_groupViews[0]+=1;
+                m_groupViews[0] += 1;
             case Genre::DRAMA:
-                m_groupViews[1]+=1;
+                m_groupViews[1] += 1;
             case Genre::ACTION:
-                m_groupViews[2]+=1;
+                m_groupViews[2] += 1;
             case Genre::FANTASY:
-                m_groupViews[3]+=1;
+                m_groupViews[3] += 1;
         }
         m_groupViews[4]++;
     }
-    int getNumViewsAlone(int i)const{
+
+    int getNumViewsAlone(int i) const
+    {
         return m_aloneViews[i];
     }
-    int getNumViewsGroup(int i)const{
+
+    int getNumViewsGroup(int i) const
+    {
         return m_groupViews[i];
     }
 };
 
-class MovieData: public Data
+class MovieData : public Data
 {
 private:
     int m_rating;
@@ -114,19 +129,25 @@ private:
     MovieData *m_movieNodeByRatingGenre;
 public:
     MovieData();
+
     MovieData(int MovieId, Genre genre, int Views, bool VipStatus) : Data(MovieId), m_rating(0), m_movieGenre(genre),
                                                                      m_views(Views), m_vipStatus(VipStatus),
                                                                      m_movieNodeById(
-                                                                             nullptr), m_movieNodeByRatingGenre(nullptr),
+                                                                             nullptr),
+                                                                     m_movieNodeByRatingGenre(nullptr),
                                                                      m_movieNodeByRatingInNone(nullptr)
     {
 
     }
-    MovieData(int ratings,int MovieId, Genre genre, int Views, bool VipStatus) : Data(MovieId), m_rating(ratings), m_movieGenre(genre),
-                                                                     m_views(Views), m_vipStatus(VipStatus),
-                                                                     m_movieNodeById(
-                                                                             nullptr), m_movieNodeByRatingGenre(nullptr),
-                                                                     m_movieNodeByRatingInNone(nullptr)
+
+    MovieData(int ratings, int MovieId, Genre genre, int Views, bool VipStatus) : Data(MovieId), m_rating(ratings),
+                                                                                  m_movieGenre(genre),
+                                                                                  m_views(Views),
+                                                                                  m_vipStatus(VipStatus),
+                                                                                  m_movieNodeById(
+                                                                                          nullptr),
+                                                                                  m_movieNodeByRatingGenre(nullptr),
+                                                                                  m_movieNodeByRatingInNone(nullptr)
     {
 
     }
@@ -162,14 +183,17 @@ public:
     {
         return m_movieNodeByRatingGenre;
     }
+
     void UpdateMovieViewsode(int i)
     {
         this->m_views += i;
     }
+
     void UpdateMovieRating(int i)
     {
         this->m_rating += i;
     }
+
     int getMovieRating() const
     {
         return m_rating;
@@ -179,21 +203,26 @@ public:
     {
         return m_views;
     }
+
     Genre getMovieGenre() const
     {
         return m_movieGenre;
     }
+
     int getMovieId() const
     {
         return m_id;
     }
-    bool getMovieStatus()const{
+
+    bool getMovieStatus() const
+    {
         return m_vipStatus;
     }
 
 };
 
-class GroupData : public Data {
+class GroupData : public Data
+{
 private:
     bool m_vip;
     int m_groupId;
@@ -202,27 +231,32 @@ private:
     int m_arrViewsSum[5] = {0, 0, 0, 0, 0};
 
 public:
-    GroupData(int Id) : Data(Id), m_vip(false), m_MembersSum(0), m_GroupUserstree() {}
+    GroupData(int Id) : Data(Id), m_vip(false), m_MembersSum(0), m_GroupUserstree()
+    {}
 
     ~GroupData() = default;
 
-    bool getVipStatus() const {
+    bool getVipStatus() const
+    {
         return m_vip;
     }
 
-    int getGroupId() const {
+    int getGroupId() const
+    {
         return m_groupId;
     }
 
-    int getGroupsize() const {
+    int getGroupsize() const
+    {
         return m_GroupUserstree.getSize();
     }
 
-    StatusType add_user(int userkey, UserData *userdata) {
-
-
-        if (m_GroupUserstree.Insert(userkey, userdata) == StatusType::SUCCESS) {
-            if (userdata->getVipStatus()) {
+    StatusType add_user(int userkey, UserData *userdata)
+    {
+        if (m_GroupUserstree.Insert(userkey, userdata) == StatusType::SUCCESS)
+        {
+            if (userdata->getVipStatus())
+            {
                 this->m_vip = true;
             }
 
@@ -233,26 +267,32 @@ public:
     }
 
 
-    RankTree<int, UserData *> &getGroupUsers() {
+    RankTree<int, UserData *> &getGroupUsers()
+    {
         return m_GroupUserstree;
     }
 
-    StatusType remove_user(int key) {
+    StatusType remove_user(int key)
+    {
 
         return m_GroupUserstree.Remove(key);
 
     }
 
-    void updateTogtherViews(MovieData *movie) {
+    void updateTogtherViews(MovieData *movie)
+    {
         UserData **arr = nullptr;
-        if (m_MembersSum > 0) {
+        if (m_MembersSum > 0)
+        {
             arr = new UserData *[m_MembersSum];
-            if (arr == nullptr) {
+            if (arr == nullptr)
+            {
                 return;
             }
 
             m_GroupUserstree.BuildInOrderArray(arr);
-            for (int i = 0; i < m_MembersSum; i++) {
+            for (int i = 0; i < m_MembersSum; i++)
+            {
                 arr[i]->updateGroupViews(movie->getMovieGenre(), m_MembersSum);
 
             }
@@ -262,34 +302,44 @@ public:
 
     }
 
-    void getGenreViews(int *temparr) {
+    void getGenreViews(int *temparr)
+    {
         UserData **arr = nullptr;
-        if (m_MembersSum > 0) {
+        if (m_MembersSum > 0)
+        {
             arr = new UserData *[m_MembersSum];
-            if (arr == nullptr) {
+            if (arr == nullptr)
+            {
                 return;
             }
-            m_GroupUserstree.InOrderArray(arr);
-            for (int i = 0; i < m_MembersSum; i++) {
-                for (int j = 0; j < 5; j++) {
+            m_GroupUserstree.BuildInOrderArray(arr);
+            for (int i = 0; i < m_MembersSum; i++)
+            {
+                for (int j = 0; j < 5; j++)
+                {
                     temparr[j] += arr[i]->getNumViewsAlone(j) + arr[i]->getNumViewsGroup(j);
                 }
             }
 
         }
     }
-    Genre PopularGenre() {
+
+    Genre PopularGenre()
+    {
         int arr[5] = {0};
         int n = 0;
         Genre genre;
         getGenreViews(arr);
-        for (int i = 0; i < 5; ++i) {
-            if (arr[i] > arr[n]) {
+        for (int i = 0; i < 5; ++i)
+        {
+            if (arr[i] > arr[n])
+            {
                 n = i;
             }
-
         }
-        for (int i = 0; i < 5; ++i) {
+
+        for (int i = 0; i < 5; ++i)
+        {
             if (n == 0)
                 return Genre::COMEDY;
             if (n == 1)
