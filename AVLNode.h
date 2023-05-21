@@ -217,7 +217,6 @@ AVLNode<Key, Data>::AVLNode(Key key, Data data)
 template<class Key, class Data>
 AVLNode<Key, Data>::~AVLNode()
 {
-
 }
 
 template<class Key, class Data>
