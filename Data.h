@@ -84,15 +84,21 @@ public:
 
         switch (genre) {
             case Genre::COMEDY:
-                m_aloneViews[0]+=groupsize;
+                m_groupViews[0]+=1;
             case Genre::DRAMA:
-                m_aloneViews[1]+=groupsize;
+                m_groupViews[1]+=1;
             case Genre::ACTION:
-                m_aloneViews[2]+=groupsize;
+                m_groupViews[2]+=1;
             case Genre::FANTASY:
-                m_aloneViews[3]+=groupsize;
+                m_groupViews[3]+=1;
         }
-        m_aloneViews[4]++;
+        m_groupViews[4]++;
+    }
+    int getNumViewsAlone(int i)const{
+        return m_aloneViews[i];
+    }
+    int getNumViewsGroup(int i)const{
+        return m_groupViews[i];
     }
 };
 
@@ -160,6 +166,10 @@ public:
     {
         this->m_views += i;
     }
+    void UpdateMovieRating(int i)
+    {
+        this->m_rating += i;
+    }
     int getMovieRating() const
     {
         return m_rating;
@@ -189,6 +199,7 @@ private:
     int m_groupId;
     int m_MembersSum;
     AVLtree<int, UserData *> m_GroupUserstree;
+    int m_arrViewsSum[5] = {0, 0, 0, 0, 0};
 
 public:
     GroupData(int Id) : Data(Id), m_vip(false), m_MembersSum(0), m_GroupUserstree() {}
@@ -207,44 +218,88 @@ public:
         return m_GroupUserstree.getSize();
     }
 
-    StatusType add_user(int userkey,UserData* userdata) {
+    StatusType add_user(int userkey, UserData *userdata) {
 
 
-        if( m_GroupUserstree.Insert(userkey,userdata)==StatusType::SUCCESS){
-            if (userdata->getVipStatus()){
-                this->m_vip= true;
+        if (m_GroupUserstree.Insert(userkey, userdata) == StatusType::SUCCESS) {
+            if (userdata->getVipStatus()) {
+                this->m_vip = true;
             }
-            return  StatusType::SUCCESS;
+
+            return StatusType::SUCCESS;
         }
-        return  StatusType::FAILURE;
+        return StatusType::FAILURE;
 
     }
 
 
-    AVLtree<int, UserData *>& getGroupUsers() {
+    AVLtree<int, UserData *> &getGroupUsers() {
         return m_GroupUserstree;
     }
+
     StatusType remove_user(int key) {
 
         return m_GroupUserstree.Remove(key);
 
     }
 
-    void updateTogtherViews(MovieData* movie)
-    {
-     UserData** arr=new UserData*[m_MembersSum];
-     m_GroupUserstree.InOrderArray(arr);
-     for(int i=0;i<m_MembersSum;i++){
-        arr[i]->updateGroupViews(movie->getMovieGenre(),m_MembersSum);
+    void updateTogtherViews(MovieData *movie) {
+        UserData **arr = nullptr;
+        if (m_MembersSum > 0) {
+            arr = new UserData *[m_MembersSum];
+            if (arr == nullptr) {
+                return;
+            }
+            m_GroupUserstree.InOrderArray(arr);
+            for (int i = 0; i < m_MembersSum; i++) {
+                arr[i]->updateGroupViews(movie->getMovieGenre(), m_MembersSum);
 
-     }
-        movie->UpdateMovieViewsode(m_MembersSum);
+            }
+            movie->UpdateMovieViewsode(m_MembersSum);
+
+        }
 
     }
 
+    void getGenreViews(int *temparr) {
+        UserData **arr = nullptr;
+        if (m_MembersSum > 0) {
+            arr = new UserData *[m_MembersSum];
+            if (arr == nullptr) {
+                return;
+            }
+            m_GroupUserstree.InOrderArray(arr);
+            for (int i = 0; i < m_MembersSum; i++) {
+                for (int j = 0; j < 5; j++) {
+                    temparr[j] += arr[i]->getNumViewsAlone(j) + arr[i]->getNumViewsGroup(j);
+                }
+            }
 
+        }
+    }
+    Genre PopularGenre() {
+        int arr[5] = {0};
+        int n = 0;
+        Genre genre;
+        getGenreViews(arr);
+        for (int i = 0; i < 5; ++i) {
+            if (arr[i] > arr[n]) {
+                n = i;
+            }
+
+        }
+        for (int i = 0; i < 5; ++i) {
+            if (n == 0)
+                return Genre::COMEDY;
+            if (n == 1)
+                return Genre::DRAMA;
+            if (n == 2)
+                return Genre::ACTION;
+            if (n == 3)
+                return Genre::FANTASY;
+        }
+    }
 };
-
 
 
 #endif //WET1_DATA_H

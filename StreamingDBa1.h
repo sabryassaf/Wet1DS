@@ -72,7 +72,7 @@ public:
     output_t<int> get_group_recommendation(int groupId);
 
     // } </DO-NOT-MODIFY>
-    StatusType RatingsMoviesTrees(int movieId,MovieData* movieData, int added_rating,int added_views);
+    StatusType UpdateRatingsMoviesTrees(int movieId,MovieData* movieData, int added_rating,int added_views);
 
 };
 

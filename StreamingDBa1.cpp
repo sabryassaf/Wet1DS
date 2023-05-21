@@ -193,7 +193,7 @@ StatusType streaming_database::user_watch(int userId, int movieId)
     }
     watchMovie->UpdateMovieViewsode(1);
     //***************updating tree views************//
-    return RatingsMoviesTrees(movieId, watchMovie,0,1);
+    return UpdateRatingsMoviesTrees(movieId, watchMovie,0,1);
 
 
 }
@@ -213,61 +213,137 @@ StatusType streaming_database::group_watch(int groupId,int movieId)
             return StatusType::FAILURE;
     }
     watchGroup->updateTogtherViews(watchMovie);
-    return RatingsMoviesTrees(movieId, watchMovie,0,watchGroup->getGroupsize());
+    return UpdateRatingsMoviesTrees(movieId, watchMovie,0,watchGroup->getGroupsize());
 }
 
 output_t<int> streaming_database::get_all_movies_count(Genre genre)
 {
-    static int i = 0;
 
     switch (genre) {
         case Genre::COMEDY:
-            i= m_COMEDY.getSize();
+            return m_COMEDY.getSize();
         case Genre::DRAMA:
-            i= m_DRAMA.getSize();
+            return m_DRAMA.getSize();
         case Genre::ACTION:
-            i= m_ACTION.getSize();
+            return m_ACTION.getSize();
         case Genre::FANTASY:
-            i=m_FANTASY.getSize();
+            return m_FANTASY.getSize();
         case Genre::NONE:
-            i=m_AllMoviesId.getSize();
+            return m_AllMoviesRating.getSize();
 
     }
 
     // TODO: Your code goes here
 
-    return (i++==0) ? 11 : 2;
 }
 
 StatusType streaming_database::get_all_movies(Genre genre, int *const output)
 {
+int arrSize=0;
     // TODO: Your code goes here
-    output[0] = 4001;
-    output[1] = 4002;
-    return StatusType::SUCCESS;
+    if(!output)
+        return StatusType::INVALID_INPUT;
+    arrSize=get_all_movies_count(genre).ans();
+    if(arrSize <=0)
+        return StatusType::FAILURE;
+
+    MovieData** arr = new MovieData*[arrSize];
+    if(!arr){
+        return StatusType::ALLOCATION_ERROR;
+    }
+
+    switch (genre) {
+        case Genre::COMEDY:
+            m_COMEDY.InOrderArray(arr);
+        case Genre::DRAMA:
+            m_DRAMA.InOrderArray(arr);
+        case Genre::ACTION:
+             m_ACTION.InOrderArray(arr);
+        case Genre::FANTASY:
+             m_FANTASY.InOrderArray(arr);
+        case Genre::NONE:
+             m_AllMoviesRating.InOrderArray(arr);
+
+    }
+         for(int i=0;i<arrSize;i++){
+         output[i]=arr[i]->getId();
+       }
+            delete[] arr;
+      return StatusType::SUCCESS;
+
 }
 
 output_t<int> streaming_database::get_num_views(int userId, Genre genre)
 {
     // TODO: Your code goes here
-    return 2008;
+   //return 2008;
+   int numViews=0;
+    if (userId <= 0) {
+        return StatusType::INVALID_INPUT;
+    }
+    UserData *watchUser = m_AllUsers.Find(userId);
+    if(!watchUser){
+        return StatusType::FAILURE;
+    }
+
+    switch (genre) {
+        case Genre::COMEDY:
+            return watchUser->getNumViewsAlone(0)+ watchUser->getNumViewsAlone(0);
+        case Genre::DRAMA:
+            return watchUser->getNumViewsAlone(1)+ watchUser->getNumViewsAlone(1);
+        case Genre::ACTION:
+            return watchUser->getNumViewsAlone(2)+ watchUser->getNumViewsAlone(2);
+        case Genre::FANTASY:
+            return watchUser->getNumViewsAlone(3)+ watchUser->getNumViewsAlone(3);
+        case Genre::NONE:
+            return watchUser->getNumViewsAlone(4)+ watchUser->getNumViewsAlone(4);
+
+    }
+
 }
 
 StatusType streaming_database::rate_movie(int userId, int movieId, int rating)
 {
+
     // TODO: Your code goes here
-    return StatusType::SUCCESS;
+    if (movieId <= 0 || userId <= 0 || rating<0 || rating>100) {
+        return StatusType::INVALID_INPUT;
+    }
+    UserData *watchUser = m_AllUsers.Find(userId);
+    MovieData* watchMovie= m_AllMoviesId.Find(movieId);
+    if(watchUser== nullptr || watchMovie== nullptr)
+        return StatusType::FAILURE;
+    if(watchMovie->getMovieStatus()){
+        if(!watchUser->getVipStatus())
+            return StatusType::FAILURE;
+    }
+    watchMovie->UpdateMovieRating(rating);
+    return UpdateRatingsMoviesTrees(movieId,watchMovie,rating,0);
+
 }
 
 output_t<int> streaming_database::get_group_recommendation(int groupId)
 {
+
     // TODO: Your code goes here
-    static int i = 0;
-    return (i++==0) ? 11 : 2;
-}
+    //static int i = 0;
+   // return (i++==0) ? 11 : 2;
+    Genre favgenre;
+
+    if ( groupId <= 0) {
+        return StatusType::INVALID_INPUT;
+    }
+    GroupData *watchGroup = m_AllGroups.Find(groupId);
+    if(watchGroup== nullptr)
+        return StatusType::FAILURE;
+    favgenre=watchGroup->PopularGenre();
+///////////////// not finished
+
+    }
+
 
 /////////////////////////////added functions/////////////
-StatusType streaming_database:: RatingsMoviesTrees(int movieId,MovieData* movieData, int added_rating,int added_views){
+StatusType streaming_database:: UpdateRatingsMoviesTrees(int movieId,MovieData* movieData, int added_rating,int added_views){
 StatusType status1=StatusType::FAILURE;
 StatusType status2=StatusType::FAILURE;
 
@@ -301,5 +377,6 @@ StatusType status2=StatusType::FAILURE;
    }
     return StatusType::FAILURE;
 }
+
 
 
