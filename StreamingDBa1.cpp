@@ -155,6 +155,7 @@ StatusType streaming_database::remove_group(int groupId) {
 
 
     }
+    return StatusType::FAILURE;
 }
 
 StatusType streaming_database::add_user_to_group(int userId, int groupId) {
@@ -232,7 +233,7 @@ output_t<int> streaming_database::get_all_movies_count(Genre genre)
             return m_AllMoviesRating.getSize();
 
     }
-
+    return StatusType::FAILURE;
     // TODO: Your code goes here
 
 }
@@ -299,6 +300,7 @@ output_t<int> streaming_database::get_num_views(int userId, Genre genre)
             return watchUser->getNumViewsAlone(4)+ watchUser->getNumViewsAlone(4);
 
     }
+    return StatusType::FAILURE;
 
 }
 

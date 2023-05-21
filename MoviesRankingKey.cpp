@@ -20,37 +20,43 @@ public:
 MoviesRankingKey:: MoviesRankingKey(int id, int views) : m_id(id),m_rating(0),m_viewers(views){}
 MoviesRankingKey:: MoviesRankingKey(int id,int rating,int views) : m_id(id), m_rating(rating),m_viewers(views)
 {}
+MoviesRankingKey:: MoviesRankingKey(const MoviesRankingKey& copy){
+    this->m_rating=copy.getRATINGS();
+    this->m_viewers=copy.getVIEWS();
+    this->m_id=copy.getID();
+}
 
-bool MoviesRankingKey:: operator<(const MoviesRankingKey &other) const
-{
-    const MoviesRankingKey *otherMovie = dynamic_cast<const MoviesRankingKey *>(&other);
-    if (otherMovie != nullptr)
-    {
-        if (this->m_rating > otherMovie->m_rating)
-        {
-            return true;
-        } else if (this->m_rating < otherMovie->m_rating)
-        {
-            return false;
-        } else
-        {
-            if (this->m_viewers > otherMovie->m_viewers)
-            {
-                return true;
-            } else if (this->m_viewers < otherMovie->m_viewers)
-            {
-                return false;
-            } else
-            {
-                return this->m_id < otherMovie->m_id;
+     int MoviesRankingKey:: getID()const {
+         return m_id;
+}
+    int MoviesRankingKey:: getVIEWS()const{
+        return m_viewers;
+}
+     int MoviesRankingKey:: getRATINGS()const {
+         return m_rating;
+
+
+     }
+
+bool MoviesRankingKey:: operator<( const MoviesRankingKey& other) const {
+    return ::operator<(*this, other);
+}
+
+
+bool operator<(const MoviesRankingKey& movie1, const MoviesRankingKey& movie2){
+
+        if(movie1.getRATINGS()==movie2.getRATINGS()){
+            if(movie1.getVIEWS()==movie2.getVIEWS()){
+                return movie1.getID()<movie2.getID();
             }
+            return movie1.getVIEWS()>movie2.getVIEWS();
         }
-
-    } else
-    {
-        throw (Key_Type_Exceptions("The Data Types Aren't comparable "));
+        return  movie1.getRATINGS()>movie2.getRATINGS();
     }
 
+bool operator==(const MoviesRankingKey& movie1, const MoviesRankingKey& movie2)
+{
+    return ((movie1.getID()==movie2.getID()) && (movie1.getVIEWS()==movie2.getVIEWS()) && (movie1.getRATINGS()==movie2.getRATINGS()));
 }
 
 #include "MoviesRankingKey.h"
