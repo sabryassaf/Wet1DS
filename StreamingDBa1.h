@@ -17,7 +17,9 @@
 
 #include "wet1util.h"
 #include "RankTree.h"
-#include "Data.h"
+#include "MovieData.h"
+#include "UserData.h"
+#include "GroupData.h"
 #include "MoviesRankingKey.h"
 
 class streaming_database
@@ -32,6 +34,8 @@ private:
     RankTree<MoviesRankingKey, MovieData *> m_FANTASY;
     RankTree<int, UserData *> m_AllUsers; //the key would be user id
     RankTree<int, GroupData *> m_AllGroups; //the key would be group id
+    StatusType UpdateRatingsMoviesTrees(int movieId, MovieData *movieData, int added_rating, int added_views);
+
 
 public:
     // <DO-NOT-MODIFY> {
@@ -69,7 +73,6 @@ public:
     output_t<int> get_group_recommendation(int groupId);
 
     // } </DO-NOT-MODIFY>
-    StatusType UpdateRatingsMoviesTrees(int movieId, MovieData *movieData, int added_rating, int added_views);
 
 };
 

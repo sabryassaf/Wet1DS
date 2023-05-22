@@ -46,6 +46,8 @@ private:
     void BuildInOrderArrayAux(AVLNode<Key, Data> *node, Data *InOrderArray, int *index);
 
 public:
+    void FreeData(AVLNode<Key, Data> *node);
+
     void DeleteTree(AVLNode<Key, Data> *node);
 
     RankTree() : size(0), root(nullptr), m_max(nullptr)
@@ -72,6 +74,8 @@ public:
 
     AVLNode<Key, Data> *getRoot() const;
 
+    AVLNode<Key, Data> *getMax() const;
+
     void setRoot(AVLNode<Key, Data> *newRoot);
 
     void BuildInOrderArray(Data *InOrderArray);
@@ -89,6 +93,12 @@ template<class Key, class Data>
 AVLNode<Key, Data> *RankTree<Key, Data>::getRoot() const
 {
     return this->root;
+}
+template<class Key, class Data>
+
+AVLNode<Key, Data> *RankTree<Key, Data>::getMax() const
+{
+    return this->m_max;
 }
 
 template<class Key, class Data>
@@ -339,6 +349,7 @@ AVLNode<Key, Data> *RankTree<Key, Data>::FindNode(const Key &key, AVLNode<Key, D
 
     return nullptr;
 }
+////////////////////// Implementations for public//////////////
 
 template<class Key, class Data>
 void RankTree<Key, Data>::DeleteTree(AVLNode<Key, Data> *node)
@@ -353,7 +364,17 @@ void RankTree<Key, Data>::DeleteTree(AVLNode<Key, Data> *node)
     delete node;
 }
 
-////////////////////// Implementations for public//////////////
+template<class Key, class Data>
+void RankTree<Key, Data>::FreeData(AVLNode<Key, Data> *node)
+{
+    if (node == nullptr)
+    {
+        return;
+    }
+    FreeData(node->getRightChild());
+    FreeData(node->getLeftChild());
+    delete node->getData();
+}
 
 template<class Key, class Data>
 StatusType RankTree<Key, Data>::Insert(Key &key, Data &data)
@@ -381,8 +402,8 @@ StatusType RankTree<Key, Data>::Remove(const Key &key)
     {
         return StatusType::FAILURE;
     }
-    AVLNode<Key, Data> *test;
-    test = DeleteNode(key, root);
+    //AVLNode<Key, Data> *test;
+    //test = DeleteNode(key, root);
     size--;
     return StatusType::SUCCESS;
 

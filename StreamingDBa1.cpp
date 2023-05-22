@@ -10,55 +10,57 @@ streaming_database::streaming_database()
 
 streaming_database::~streaming_database()
 {
+    m_AllMoviesId.FreeData(m_AllMoviesId.getRoot());
+    m_AllUsers.FreeData(m_AllUsers.getRoot());
+    m_AllGroups.FreeData(m_AllGroups.getRoot());
+
 
     // TODO: Your code goes here
 }
 
 
-StatusType streaming_database::add_movie(int movieId, Genre genre, int views, bool vipOnly)
-{
+StatusType streaming_database::add_movie(int movieId, Genre genre, int views, bool vipOnly) {
     StatusType status = StatusType::FAILURE;
 
-    if (movieId <= 0 || genre == Genre::NONE || views < 0)
-    {
+    if (movieId <= 0 || genre == Genre::NONE || views < 0) {
         return StatusType::INVALID_INPUT;
     }
+    try{
+        MovieData *new_movie_data = new MovieData(movieId, genre, views, vipOnly);
 
-    MovieData *new_movie_data = new MovieData(movieId, genre, views, vipOnly);
-    if (!new_movie_data)
-        return StatusType::ALLOCATION_ERROR;
-    if (m_AllMoviesId.Insert(movieId, new_movie_data) == StatusType::SUCCESS)
-    {
-        MoviesRankingKey new_movie_key(movieId, views);
-        if (m_AllMoviesRating.Insert(new_movie_key, new_movie_data) == StatusType::SUCCESS)
-        {
+        if (m_AllMoviesId.Insert(movieId, new_movie_data) == StatusType::SUCCESS) {
+            MoviesRankingKey new_movie_key(movieId, views);
+            if (m_AllMoviesRating.Insert(new_movie_key, new_movie_data) == StatusType::SUCCESS) {
 
-            switch (genre)
-            {
-                case Genre::COMEDY:
-                    status = m_COMEDY.Insert(new_movie_key, new_movie_data);
-                    break;
-                case Genre::DRAMA:
-                    status = m_DRAMA.Insert(new_movie_key, new_movie_data);
-                    break;
-                case Genre::ACTION:
-                    status = m_ACTION.Insert(new_movie_key, new_movie_data);
-                    break;
-                case Genre::FANTASY:
-                    status = m_FANTASY.Insert(new_movie_key, new_movie_data);
-                    break;
-            }
+                switch (genre) {
+                    case Genre::COMEDY:
+                        status = m_COMEDY.Insert(new_movie_key, new_movie_data);
+                        break;
+                    case Genre::DRAMA:
+                        status = m_DRAMA.Insert(new_movie_key, new_movie_data);
+                        break;
+                    case Genre::ACTION:
+                        status = m_ACTION.Insert(new_movie_key, new_movie_data);
+                        break;
+                    case Genre::FANTASY:
+                        status = m_FANTASY.Insert(new_movie_key, new_movie_data);
+                        break;
+                    case Genre::NONE:
+                        return StatusType::FAILURE;
+                }
 
-            if (status == StatusType::SUCCESS)
-            {
-                return StatusType::SUCCESS;
+                if (status == StatusType::SUCCESS) {
+                    return StatusType::SUCCESS;
 
+                }
             }
         }
+        delete new_movie_data;
+        return StatusType::FAILURE;
     }
-    delete new_movie_data;
-    return StatusType::FAILURE;
-
+    catch (const std::bad_alloc&) {
+        return StatusType::ALLOCATION_ERROR;
+    }
 }
 
 StatusType streaming_database::remove_movie(int movieId)
@@ -91,6 +93,8 @@ StatusType streaming_database::remove_movie(int movieId)
             case Genre::FANTASY:
                 status = m_FANTASY.Remove(key);
                 break;
+            case Genre::NONE:
+                break;
         }
         if (status == StatusType::SUCCESS)
         {
@@ -104,24 +108,23 @@ StatusType streaming_database::remove_movie(int movieId)
 }
 
 
-StatusType streaming_database::add_user(int userId, bool isVip)
-{
-    if (userId <= 0)
-    {
+StatusType streaming_database::add_user(int userId, bool isVip) {
+    if (userId <= 0) {
         return StatusType::INVALID_INPUT;
     }
-    UserData *newUser = new UserData(userId, isVip);
-    if (!newUser)
-    {
+    try {
+        UserData *newUser = new UserData(userId, isVip);
+
+        if (m_AllUsers.Insert(userId, newUser) == StatusType::SUCCESS) {
+
+            return StatusType::SUCCESS;
+        }
+        delete newUser;
+        return StatusType::FAILURE;
+    }
+    catch (const std::bad_alloc&) {
         return StatusType::ALLOCATION_ERROR;
     }
-    if (m_AllUsers.Insert(userId, newUser) == StatusType::SUCCESS)
-    {
-
-        return StatusType::SUCCESS;
-    }
-    delete newUser;
-    return StatusType::FAILURE;
 }
 
 StatusType streaming_database::remove_user(int userId)
@@ -155,24 +158,23 @@ StatusType streaming_database::remove_user(int userId)
 
 }
 
-StatusType streaming_database::add_group(int groupId)
-{
-    if (groupId <= 0)
-    {
+StatusType streaming_database::add_group(int groupId) {
+    if (groupId <= 0) {
         return StatusType::INVALID_INPUT;
     }
-    GroupData *newGroup = new GroupData(groupId);
-    if (!newGroup)
+    try
     {
+        GroupData *newGroup = new GroupData(groupId);
+        if (m_AllGroups.Insert(groupId, newGroup) == StatusType::SUCCESS) {
+
+            return StatusType::SUCCESS;
+        }
+        delete newGroup;
+        return StatusType::FAILURE;
+    }
+    catch (const std::bad_alloc&) {
         return StatusType::ALLOCATION_ERROR;
     }
-    if (m_AllGroups.Insert(groupId, newGroup) == StatusType::SUCCESS)
-    {
-
-        return StatusType::SUCCESS;
-    }
-    delete newGroup;
-    return StatusType::FAILURE;
 }
 
 
@@ -182,13 +184,15 @@ StatusType streaming_database::remove_group(int groupId)
     {
         return StatusType::INVALID_INPUT;
     }
-    // to update all the group users with id = 0;
-    if (m_AllUsers.Remove(groupId) == StatusType::SUCCESS)
+    GroupData *removeGroup = m_AllGroups.Find(groupId);
+    if(!removeGroup)
+        return StatusType::FAILURE;
+
+    if (m_AllGroups.Remove(groupId) == StatusType::SUCCESS)
     {
-        GroupData *removeGroup = m_AllGroups.Find(groupId);
+        removeGroup->deleteUserID();
         delete removeGroup;
         return StatusType::SUCCESS;
-
 
     }
     return StatusType::FAILURE;
@@ -231,7 +235,7 @@ StatusType streaming_database::user_watch(int userId, int movieId)
     {
         watchUser->updateAloneViews(watchMovie->getMovieGenre());
     }
-    watchMovie->UpdateMovieViewsode(1);
+    watchMovie->UpdateMovieViewer(1);
     //***************updating tree views************//
     return UpdateRatingsMoviesTrees(movieId, watchMovie, 0, 1);
 
@@ -286,38 +290,36 @@ StatusType streaming_database::get_all_movies(Genre genre, int *const output)
     arrSize = get_all_movies_count(genre).ans();
     if (arrSize <= 0)
         return StatusType::FAILURE;
+    try {
+        MovieData **arr = new MovieData *[arrSize];
+        switch (genre) {
+            case Genre::COMEDY:
+                m_COMEDY.BuildInOrderArray(arr);
+                break;
+            case Genre::DRAMA:
+                m_DRAMA.BuildInOrderArray(arr);
+                break;
+            case Genre::ACTION:
+                m_ACTION.BuildInOrderArray(arr);
+                break;
+            case Genre::FANTASY:
+                m_FANTASY.BuildInOrderArray(arr);
+                break;
+            case Genre::NONE:
+                m_AllMoviesRating.BuildInOrderArray(arr);
+                break;
 
-    MovieData **arr = new MovieData *[arrSize];
-    if (!arr)
-    {
+        }
+        for (int i = 0; i < arrSize; i++) {
+            output[i] = arr[i]->getId();
+        }
+        delete[] arr;
+        return StatusType::SUCCESS;
+    }
+
+    catch (const std::bad_alloc&) {
         return StatusType::ALLOCATION_ERROR;
     }
-
-    switch (genre)
-    {
-        case Genre::COMEDY:
-            m_COMEDY.BuildInOrderArray(arr);
-            break;
-        case Genre::DRAMA:
-            m_DRAMA.BuildInOrderArray(arr);
-            break;
-        case Genre::ACTION:
-            m_ACTION.BuildInOrderArray(arr);
-            break;
-        case Genre::FANTASY:
-            m_FANTASY.BuildInOrderArray(arr);
-            break;
-        case Genre::NONE:
-            m_AllMoviesRating.BuildInOrderArray(arr);
-            break;
-
-    }
-    for (int i = 0; i < arrSize; i++)
-    {
-        output[i] = arr[i]->getId();
-    }
-    delete[] arr;
-    return StatusType::SUCCESS;
 
 }
 
@@ -368,34 +370,41 @@ StatusType streaming_database::rate_movie(int userId, int movieId, int rating)
             return StatusType::FAILURE;
     }
     watchMovie->UpdateMovieRating(rating);
+
     return UpdateRatingsMoviesTrees(movieId, watchMovie, rating, 0);
 
 }
 
-output_t<int> streaming_database::get_group_recommendation(int groupId)
-{
-    Genre favgenre;
+output_t<int> streaming_database::get_group_recommendation(int groupId) {
 
+    Genre favgenre;
     if (groupId <= 0)
-    {
         return StatusType::INVALID_INPUT;
 
     GroupData *watchGroup = m_AllGroups.Find(groupId);
     if (watchGroup == nullptr)
         return StatusType::FAILURE;
     favgenre = watchGroup->PopularGenre();
-///////////////// not finished
+    switch (favgenre) {
+        case Genre::COMEDY:
+            return m_COMEDY.getMax()->getData()->getId();
+        case Genre::DRAMA:
+            return m_DRAMA.getMax()->getData()->getId();
+        case Genre::ACTION:
+            return m_ACTION.getMax()->getData()->getId();
+        case Genre::FANTASY:
+            return m_FANTASY.getMax()->getData()->getId();
+        case Genre::NONE:
+            return StatusType::FAILURE;
 
+
+    }
+    return StatusType::FAILURE;
 }
-
-
-/////////////////////////////added functions/////////////
-StatusType
-streaming_database::UpdateRatingsMoviesTrees(int movieId, MovieData *movieData, int added_rating, int added_views)
+/////////////////////////////added functions to private section/////////////
+StatusType streaming_database::UpdateRatingsMoviesTrees(int movieId, MovieData *movieData, int added_rating, int added_views)
 {
-    StatusType status1 = StatusType::FAILURE;
-    StatusType status2 = StatusType::FAILURE;
-//// check if rating should be average or accumulated
+
     MoviesRankingKey old_movie_key(movieId, movieData->getMovieViews() - added_views,
                                    movieData->getMovieRating() - added_rating);
     MoviesRankingKey new_movie_key(movieId, movieData->getMovieViews(), movieData->getMovieRating());
@@ -405,32 +414,31 @@ streaming_database::UpdateRatingsMoviesTrees(int movieId, MovieData *movieData, 
         switch (movieData->getMovieGenre())
         {
             case Genre::COMEDY:
-                status1 = m_COMEDY.Remove(old_movie_key);
-                status2 = m_COMEDY.Insert(new_movie_key, movieData);
+                if(m_COMEDY.Remove(old_movie_key)==StatusType::SUCCESS)
+                    return m_COMEDY.Insert(new_movie_key, movieData);
                 break;
             case Genre::DRAMA:
-                status1 = m_DRAMA.Remove(old_movie_key);
-                status2 = m_DRAMA.Insert(new_movie_key, movieData);
+                if(m_DRAMA.Remove(old_movie_key)==StatusType::SUCCESS)
+                    return m_DRAMA.Insert(new_movie_key, movieData);
                 break;
             case Genre::ACTION:
-                status1 = m_ACTION.Remove(old_movie_key);
-                status2 = m_ACTION.Insert(new_movie_key, movieData);
+                if(m_ACTION.Remove(old_movie_key)==StatusType::SUCCESS)
+                    return m_ACTION.Insert(new_movie_key, movieData);
                 break;
             case Genre::FANTASY:
-                status1 = m_FANTASY.Remove(old_movie_key);
-                status2 = m_FANTASY.Insert(new_movie_key, movieData);
+                if (m_FANTASY.Remove(old_movie_key)==StatusType::SUCCESS)
+                    return m_FANTASY.Insert(new_movie_key, movieData);
                 break;
-        }
-
-
-        if (status1 == StatusType::SUCCESS && status2 == StatusType::SUCCESS)
-        {
-            return StatusType::SUCCESS;
+            case Genre::NONE:
+                return StatusType::FAILURE;
 
         }
+
+        return StatusType::FAILURE;
 
     }
     return StatusType::FAILURE;
+
 }
 
 
