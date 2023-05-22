@@ -55,7 +55,7 @@ bool operator<(const MoviesRankingKey& movie1, const MoviesRankingKey& movie2){
 
         if(movie1.getRATINGS()==movie2.getRATINGS()){
             if(movie1.getVIEWS()==movie2.getVIEWS()){
-                return movie1.getID()<movie2.getID();
+                return movie1.getID()>movie2.getID();
             }
             return movie1.getVIEWS()>movie2.getVIEWS();
         }

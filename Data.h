@@ -52,7 +52,7 @@ private:
 public:
     UserData();
 
-    UserData(int Id, bool Status) : Data(Id), m_vip(Status), m_groupMem(false), m_groupId(-1)
+    UserData(int Id, bool Status) : Data(Id), m_vip(Status), m_groupMem(false), m_groupId(0)
     {
         for (int i = 0; i < 5; i++)
         {
