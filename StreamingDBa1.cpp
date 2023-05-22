@@ -394,7 +394,7 @@ streaming_database::UpdateRatingsMoviesTrees(int movieId, MovieData *movieData, 
 {
     StatusType status1 = StatusType::FAILURE;
     StatusType status2 = StatusType::FAILURE;
-
+//// check if rating should be average or accumulated
     MoviesRankingKey old_movie_key(movieId, movieData->getMovieViews() - added_views,
                                    movieData->getMovieRating() - added_rating);
     MoviesRankingKey new_movie_key(movieId, movieData->getMovieViews(), movieData->getMovieRating());
