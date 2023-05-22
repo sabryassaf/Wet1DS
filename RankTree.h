@@ -42,7 +42,7 @@ private:
 
     AVLNode<Key, Data> *FindNode(const Key &key, AVLNode<Key, Data> *node);
 
-    void BuildInOrderArrayAux(AVLNode<Key, Data> *node, Data *InOrderArray, int* index);
+    void BuildInOrderArrayAux(AVLNode<Key, Data> *node, Data *InOrderArray, int *index);
 
 public:
     void DeleteTree(AVLNode<Key, Data> *node);
@@ -408,15 +408,15 @@ int RankTree<Key, Data>::getSize() const
 }
 
 template<class Key, class Data>
-void RankTree<Key, Data>::BuildInOrderArrayAux(AVLNode<Key, Data> *node, Data *InOrderArray, int* index)
+void RankTree<Key, Data>::BuildInOrderArrayAux(AVLNode<Key, Data> *node, Data *InOrderArray, int *index)
 {
-    if (node == nullptr){
+    if (node == nullptr)
+    {
         return;
     }
-
-    BuildInOrderArrayAux(node->getLeftChild(), InOrderArray, index);
-    InOrderArray[(*index)++] = node->getData();
     BuildInOrderArrayAux(node->getRightChild(), InOrderArray, index);
+    InOrderArray[(*index)++] = node->getData();
+    BuildInOrderArrayAux(node->getLeftChild(), InOrderArray, index);
 }
 
 template<class Key, class Data>
