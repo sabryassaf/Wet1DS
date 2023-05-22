@@ -17,6 +17,7 @@ private:
 
     int size;
     AVLNode<Key, Data> *root;
+    AVLNode<Key, Data> *m_max;
 
     AVLNode<Key, Data> *RotateRight(AVLNode<Key, Data> *node);
 
@@ -47,7 +48,7 @@ private:
 public:
     void DeleteTree(AVLNode<Key, Data> *node);
 
-    RankTree() : size(0), root(nullptr)
+    RankTree() : size(0), root(nullptr), m_max(nullptr)
     {}
 
     RankTree(const RankTree &other) = delete;
@@ -222,6 +223,10 @@ AVLNode<Key, Data> *RankTree<Key, Data>::InsertNode(Key &key, Data &data, AVLNod
         if (root == nullptr)
         {
             root = newElement;
+            m_max = newElement;
+        } else if (key > this->m_max->getKey())
+        {
+            m_max = newElement;
         }
         return newElement;
     } else
@@ -302,6 +307,10 @@ AVLNode<Key, Data> *RankTree<Key, Data>::DeleteNode(const Key &key, AVLNode<Key,
 
     node->updateParameters();
     node = MakeBalance(node);
+    if (node->getRightChild() == nullptr)
+    {
+        m_max = node;
+    }
     return node;
 }
 
