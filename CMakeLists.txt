@@ -17,3 +17,4 @@ add_executable(Wet2 rankTreetester.cpp run_test.sh AVLNode.h RankTree.h)
 add_executable(Wet3 main_ut.cpp AVLNode.h RankTree.h)
 #rankTreetester.cpp run_test.sh
 #main_ut.cpp
+#add_executable(Wet1 AVLNode.h Ranktree.h run_test.sh rankTreeTester.cpp)

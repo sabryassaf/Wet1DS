@@ -10,6 +10,7 @@ streaming_database::streaming_database()
 
 streaming_database::~streaming_database()
 {
+
     // TODO: Your code goes here
 }
 
@@ -378,7 +379,7 @@ output_t<int> streaming_database::get_group_recommendation(int groupId)
     if (groupId <= 0)
     {
         return StatusType::INVALID_INPUT;
-    }
+
     GroupData *watchGroup = m_AllGroups.Find(groupId);
     if (watchGroup == nullptr)
         return StatusType::FAILURE;
