@@ -4,6 +4,7 @@
 
 #ifndef WET1_AVLNODE_H
 #define WET1_AVLNODE_H
+#define nullptr NULL
 
 #include <exception>
 #include <string>
