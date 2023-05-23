@@ -4,18 +4,19 @@
 
 #ifndef AVLNODE_H_GROUPDATA_H
 #define AVLNODE_H_GROUPDATA_H
+
 #include "wet1util.h"
 #include "UserData.h"
 #include "MovieData.h"
 #include "RankTree.h"
 
 
-class GroupData {
+class GroupData
+{
 
 private:
     int m_id;
     bool m_vip;
-    int m_groupId;
     int m_MembersSum;
     RankTree<int, UserData *> m_GroupUserstree;
     int m_arrViewsSum[5] = {0, 0, 0, 0, 0};
@@ -26,12 +27,9 @@ public:
 
     GroupData(int Id);
 
-    ~GroupData() ;
+    ~GroupData();
 
     bool getVipStatus() const;
-
-
-    int getGroupId() const;
 
 
     int getGroupsize() const;
@@ -50,9 +48,9 @@ public:
 
     void getGenreViews(int *temparr);
 
-    Genre PopularGenre() ;
+    Genre PopularGenre();
 
-    StatusType  deleteUserID();
+    StatusType deleteUserID();
 
 };
 
