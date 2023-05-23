@@ -402,8 +402,7 @@ StatusType RankTree<Key, Data>::Remove(const Key &key)
     {
         return StatusType::FAILURE;
     }
-    //AVLNode<Key, Data> *test;
-    //test = DeleteNode(key, root);
+    root = DeleteNode(key, root);
     size--;
     return StatusType::SUCCESS;
 
