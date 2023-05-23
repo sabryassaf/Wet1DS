@@ -48,6 +48,8 @@ public:
     int getNumViewsGroup(int i) const;
 
     void ResetgroupID();
+
+    void UpdategroupID(int i);
 };
 
 

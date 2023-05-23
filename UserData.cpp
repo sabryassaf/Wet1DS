@@ -77,3 +77,8 @@ void UserData:: ResetgroupID()
 {
     this->m_groupId=0;
 }
+
+void UserData:: UpdategroupID(int i)
+{
+    this->m_groupId=i;
+}

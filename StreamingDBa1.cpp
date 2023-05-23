@@ -210,8 +210,16 @@ StatusType streaming_database::add_user_to_group(int userId, int groupId)
     }
     // check if user isn't already in a group
     UserData *addUser = m_AllUsers.Find(userId);
+    if(addUser->getGroupId() > 0)
+        return StatusType::FAILURE;
     GroupData *toGroup = m_AllGroups.Find(groupId);
-    return toGroup->add_user(userId, addUser);
+    if (toGroup->add_user(userId, addUser)==StatusType::SUCCESS){
+        addUser->UpdategroupID( groupId);
+        return StatusType::SUCCESS;
+
+    }
+    return StatusType::FAILURE;
+
 }
 
 StatusType streaming_database::user_watch(int userId, int movieId)
