@@ -12,7 +12,7 @@ include_directories(.)
 #        StreamingDBa1.h
 #        wet1util.h AVLTree.h
 #        Key.h)
-add_executable(Wet1 wet1util.h Key.h AVLNode.h maina1.cpp Ranktree.h StreamingDBa1.cpp StreamingDBa1.h MoviesRankingKey.h MoviesRankingKey.cpp Data.h)
+add_executable(Wet1 wet1util.h Key.h AVLNode.h maina1.cpp Ranktree.h StreamingDBa1.cpp StreamingDBa1.h MovieData.cpp MovieData.h MoviesRankingKey.h MoviesRankingKey.cpp Data.h UserData.cpp UserData.h GroupData.cpp GroupData.h)
 add_executable(Wet2 rankTreetester.cpp run_test.sh AVLNode.h RankTree.h)
 add_executable(Wet3 main_ut.cpp AVLNode.h RankTree.h)
 #rankTreetester.cpp run_test.sh

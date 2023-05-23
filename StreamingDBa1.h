@@ -21,6 +21,7 @@
 #include "UserData.h"
 #include "GroupData.h"
 #include "MoviesRankingKey.h"
+#include "MovieData.h"
 
 class streaming_database
 {

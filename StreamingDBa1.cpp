@@ -397,7 +397,7 @@ output_t<int> streaming_database::get_group_recommendation(int groupId) {
         case Genre::COMEDY:
             return m_COMEDY.getMax()->getData()->getId();
         case Genre::DRAMA:
-            return m_DRAMA.getMax()->getData()->getId();
+        return m_DRAMA.getMax()->getData()->getId();
         case Genre::ACTION:
             return m_ACTION.getMax()->getData()->getId();
         case Genre::FANTASY:
