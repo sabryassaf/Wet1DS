@@ -37,7 +37,7 @@ public:
     MovieData(int ratings, int MovieId, Genre genre, int Views, bool VipStatus);
     ~MovieData();
     void UpdateMovieViewer(int i);
-    void UpdateMovieRating(int i);
+    int UpdateMovieRating(int i);
     int getMovieRating() const;
     int getMovieViews() const;
     Genre getMovieGenre() const;

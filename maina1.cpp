@@ -22,17 +22,17 @@ void query_get_all_movies(string cmd, streaming_database *obj, Genre genre);
 
 int main()
 {
-	
+
     int d1, d2, d3, g1;
     string b1;
     bool b;
 
     // Init
     streaming_database *obj = new streaming_database();
-	
+
     // Execute all commands in file
-	string op;
-	while (cin >> op)
+    string op;
+    while (cin >> op)
     {
         if (!op.compare("add_movie")) {
             cin >> d1 >> g1 >> d2 >> b1;
@@ -97,6 +97,7 @@ int main()
             cin >> d1;
             print(op, obj->get_group_recommendation(d1));
         } else {
+
             cout << "Unknown command: " << op << endl;
             return -1;
         }
@@ -105,33 +106,35 @@ int main()
             cout << "Invalid input format" << endl;
             return -1;
         }
+
     }
 
+
     // Quit 
-	delete obj;
-	return 0;
+    delete obj;
+    return 0;
 }
 
 // Helpers
 static const char *StatusTypeStr[] =
-{
-   	"SUCCESS",
-	"ALLOCATION_ERROR",
-	"INVALID_INPUT",
-	"FAILURE"
-};
+        {
+                "SUCCESS",
+                "ALLOCATION_ERROR",
+                "INVALID_INPUT",
+                "FAILURE"
+        };
 
-void print(string cmd, StatusType res) 
+void print(string cmd, StatusType res)
 {
-	cout << cmd << ": " << StatusTypeStr[(int) res] << endl;
+    cout << cmd << ": " << StatusTypeStr[(int) res] << endl;
 }
 
 void print(string cmd, output_t<int> res)
 {
     if (res.status() == StatusType::SUCCESS) {
-	    cout << cmd << ": " << StatusTypeStr[(int) res.status()] << ", " << res.ans() << endl;
+        cout << cmd << ": " << StatusTypeStr[(int) res.status()] << ", " << res.ans() << endl;
     } else {
-	    cout << cmd << ": " << StatusTypeStr[(int) res.status()] << endl;
+        cout << cmd << ": " << StatusTypeStr[(int) res.status()] << endl;
     }
 }
 
@@ -155,10 +158,10 @@ void query_get_all_movies(string cmd, streaming_database *obj, Genre genre)
     StatusType status = obj->get_all_movies(genre, out_mem);
     print(cmd, status);
     if (status == StatusType::SUCCESS) {
-	    for (int i = 0; i < to_alloc; ++i)
+        for (int i = 0; i < to_alloc; ++i)
         {
-		    cout << out_mem[i] << endl;
-	    }
+            cout << out_mem[i] << endl;
+        }
     }
     delete[] out_mem;
 }

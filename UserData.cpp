@@ -26,6 +26,10 @@ int UserData::  getGroupId() const
 {
     return m_groupId;
 }
+int UserData::  getUserId() const
+{
+    return m_id;
+}
 
 void UserData::  updateAloneViews(Genre genre)
 {
@@ -33,12 +37,16 @@ void UserData::  updateAloneViews(Genre genre)
     {
         case Genre::COMEDY:
             m_aloneViews[0]++;
+            break;
         case Genre::DRAMA:
             m_aloneViews[1]++;
+            break;
         case Genre::ACTION:
             m_aloneViews[2]++;
+            break;
         case Genre::FANTASY:
             m_aloneViews[3]++;
+            break;
         case Genre::NONE:
             break;
     }
@@ -53,13 +61,17 @@ void UserData:: updateGroupViews(Genre genre)
     switch (genre)
     {
         case Genre::COMEDY:
-            m_groupViews[0] += 1;
+            m_groupViews[0]++;
+            break;
         case Genre::DRAMA:
-            m_groupViews[1] += 1;
+            m_groupViews[1]++;
+            break;
         case Genre::ACTION:
-            m_groupViews[2] += 1;
+            m_groupViews[2]++;
+            break;
         case Genre::FANTASY:
-            m_groupViews[3] += 1;
+            m_groupViews[3]++;
+            break;
         case Genre::NONE:
             break;
     }

@@ -54,6 +54,9 @@ public:
 
     void updatealoneviews(Genre genre);
 
+    void printarr();
+
+
 };
 
 

@@ -39,6 +39,7 @@ public:
 
     int getGroupId() const;
 
+    int getUserId() const;
     void updateAloneViews(Genre genre);
 
     void updateGroupViews(Genre genre);

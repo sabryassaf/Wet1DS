@@ -28,10 +28,12 @@ void MovieData:: UpdateMovieViewer(int i)
     this->m_views += i;
 }
 
-void MovieData:: UpdateMovieRating(int i)
+int MovieData:: UpdateMovieRating(int i)
 {
+    int add= (m_rating*m_raters+i)/(m_raters+1)- m_rating;
     m_rating=(m_rating*m_raters+i)/(m_raters+1);
     m_raters+=1;
+    return add;
 }
 
 int MovieData::getMovieRating() const

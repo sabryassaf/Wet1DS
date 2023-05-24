@@ -43,6 +43,7 @@ RankTree<int, UserData *> &GroupData::getGroupUsers()
 
 StatusType GroupData::remove_user(int key)
 {
+    m_MembersSum--;
 
     return m_GroupUserstree.Remove(key);
 
@@ -60,7 +61,7 @@ void GroupData::updateTogtherViews(MovieData *movie)
         for (int i = 0; i < m_MembersSum; i++)
         {
             arr[i]->updateGroupViews(movie->getMovieGenre());
-
+        //    printf("**********the users are %d\n ",arr[i]->getUserId());
         }
         movie->UpdateMovieViewer(m_MembersSum);
         delete[] arr;
@@ -125,7 +126,7 @@ Genre GroupData::PopularGenre()
     int arr[5] = {0};
     int n = 0;
     getGenreViews(arr);
-    for (int i = 0; i < 5; ++i)
+    for (int i = 0; i < 4; ++i)
     {
         if (arr[i] > arr[n])
         {
@@ -133,7 +134,7 @@ Genre GroupData::PopularGenre()
         }
     }
 
-    for (int i = 0; i < 5; ++i)
+    for (int i = 0; i < 4; ++i)
     {
         if (n == 0)
             return Genre::COMEDY;
@@ -172,3 +173,29 @@ void GroupData::updatealoneviews(Genre genre){
 
 }
 
+
+void GroupData::printarr()
+{
+
+    UserData **arr = nullptr;
+    if (m_MembersSum <= 0)
+        return;
+    try
+    {
+        arr = new UserData *[m_MembersSum];
+        m_GroupUserstree.BuildInOrderArray(arr);
+        printf("the size are %d : ", m_MembersSum);
+
+        for (int i = m_MembersSum-1; i >-1 ; i--)
+        {
+
+                printf("the id are %d : ",arr[i]->getUserId());
+
+        }
+        delete[] arr;
+    }
+    catch (const std::bad_alloc &)
+    {
+        return;
+    }
+}
