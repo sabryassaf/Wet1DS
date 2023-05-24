@@ -41,7 +41,7 @@ public:
 
     void updateAloneViews(Genre genre);
 
-    void updateGroupViews(Genre genre, int groupsize);
+    void updateGroupViews(Genre genre);
 
     int getNumViewsAlone(int i) const;
 

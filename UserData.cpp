@@ -43,10 +43,12 @@ void UserData::  updateAloneViews(Genre genre)
             break;
     }
     m_aloneViews[4]++;
+
 }
 
-void UserData:: updateGroupViews(Genre genre, int groupsize)
+void UserData:: updateGroupViews(Genre genre)
 {
+
 
     switch (genre)
     {
@@ -71,6 +73,8 @@ int UserData:: getNumViewsAlone(int i) const
 
 int UserData:: getNumViewsGroup(int i) const
 {
+    if(m_groupId <= 0)
+        return 0;
     return m_groupViews[i];
 }
 void UserData:: ResetgroupID()

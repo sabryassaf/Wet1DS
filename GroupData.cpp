@@ -59,7 +59,7 @@ void GroupData::updateTogtherViews(MovieData *movie)
         m_GroupUserstree.BuildInOrderArray(arr);
         for (int i = 0; i < m_MembersSum; i++)
         {
-            arr[i]->updateGroupViews(movie->getMovieGenre(), m_MembersSum);
+            arr[i]->updateGroupViews(movie->getMovieGenre());
 
         }
         movie->UpdateMovieViewer(m_MembersSum);
@@ -148,4 +148,27 @@ Genre GroupData::PopularGenre()
 
 }
 
+void GroupData::updatealoneviews(Genre genre){
+
+    switch (genre)
+    {
+        case Genre::COMEDY:
+             m_arrViewsSum[0]++;
+            break;
+        case Genre::DRAMA:
+            m_arrViewsSum[1]++;
+            break;
+        case Genre::ACTION:
+            m_arrViewsSum[2]++;
+            break;
+        case Genre::FANTASY:
+            m_arrViewsSum[3]++;
+            break;
+        case Genre::NONE:
+            break;
+
+    }
+    m_arrViewsSum[4]++;
+
+}
 

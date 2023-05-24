@@ -52,6 +52,8 @@ public:
 
     StatusType deleteUserID();
 
+    void updatealoneviews(Genre genre);
+
 };
 
 
