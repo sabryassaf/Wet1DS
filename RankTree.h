@@ -381,7 +381,7 @@ void RankTree<Key, Data>::FreeData(AVLNode<Key, Data> *node)
     }
     FreeData(node->getRightChild());
     FreeData(node->getLeftChild());
-    delete node;
+    delete node->getData();
 }
 
 template<class Key, class Data>
