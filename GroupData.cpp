@@ -7,16 +7,12 @@
 GroupData::GroupData(int Id) : m_id(Id), m_vip(false), m_MembersSum(0), m_GroupUserstree()
 {}
 
-GroupData::~GroupData()
-{
-     m_GroupUserstree.DeleteTree(m_GroupUserstree.getRoot());
-};
+GroupData::~GroupData() = default;
 
 bool GroupData::getVipStatus() const
 {
     return m_vip;
 }
-
 bool GroupData::Empty() const
 {
     return m_GroupUserstree.EmptyTree();
@@ -69,7 +65,7 @@ void GroupData::updateTogtherViews(MovieData *movie)
         for (int i = 0; i < m_MembersSum; i++)
         {
             arr[i]->updateGroupViews(movie->getMovieGenre());
-            //    printf("**********the users are %d\n ",arr[i]->getUserId());
+        //    printf("**********the users are %d\n ",arr[i]->getUserId());
         }
         movie->UpdateMovieViewer(m_MembersSum);
         delete[] arr;
@@ -157,13 +153,12 @@ Genre GroupData::PopularGenre()
 
 }
 
-void GroupData::updatealoneviews(Genre genre)
-{
+void GroupData::updatealoneviews(Genre genre){
 
     switch (genre)
     {
         case Genre::COMEDY:
-            m_arrViewsSum[0]++;
+             m_arrViewsSum[0]++;
             break;
         case Genre::DRAMA:
             m_arrViewsSum[1]++;
@@ -195,10 +190,10 @@ void GroupData::printarr()
         m_GroupUserstree.BuildInOrderArray(arr);
         printf("the size are %d : ", m_MembersSum);
 
-        for (int i = m_MembersSum - 1; i > -1; i--)
+        for (int i = m_MembersSum-1; i >-1 ; i--)
         {
 
-            printf("the id are %d : ", arr[i]->getUserId());
+                printf("the id are %d : ",arr[i]->getUserId());
 
         }
         delete[] arr;
