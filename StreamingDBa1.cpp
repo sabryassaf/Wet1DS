@@ -237,7 +237,8 @@ StatusType streaming_database::add_user_to_group(int userId, int groupId)
 
 }
 
-StatusType streaming_database::user_watch(int userId, int movieId){
+StatusType streaming_database::user_watch(int userId, int movieId)
+{
     if (movieId <= 0 || userId <= 0)
     {
         return StatusType::INVALID_INPUT;
@@ -256,8 +257,8 @@ StatusType streaming_database::user_watch(int userId, int movieId){
     {
         watchUser->updateAloneViews(watchMovie->getMovieGenre());
         watchMovie->UpdateMovieViewer(1);
-    }
-    else {
+    } else
+    {
         GroupData *group = m_AllGroups.Find(watchUser->getGroupId());
         group->updatealoneviews(watchMovie->getMovieGenre());
         watchUser->updateGroupViews(watchMovie->getMovieGenre());
@@ -285,24 +286,25 @@ StatusType streaming_database::group_watch(int groupId, int movieId)
     }
 
     watchGroup->updateTogtherViews(watchMovie);
- //  printf(" group %d , size is %d\n*******",groupId,watchGroup->getGroupsize());
+    //  printf(" group %d , size is %d\n*******",groupId,watchGroup->getGroupsize());
     MovieData **arr = new MovieData *[100];
     MovieData **arr2 = new MovieData *[100];
     m_AllMoviesId.BuildInOrderArray(arr2);
     m_AllMoviesRating.BuildInOrderArray(arr);
 //int ratsize = m_AllMoviesRating.getSize();
- //   printf(" rat sie is %d \n",ratsize);
+    //   printf(" rat sie is %d \n",ratsize);
 //int idsize = m_AllMoviesId.getSize();
-   // printf(" rat sie is %d \n",idsize);
-   // printf("number of users %d \n" , m_AllUsers.getSize());
-    for(int i=0;i<m_AllMoviesRating.getSize();i++){
-   //    printf(" the ids are : %d and the ratings %d and the vies %d\n",arr[i]->getId(),arr[i]->getMovieRating(),arr[i]->getMovieViews());
-    //    printf(" the ids are : %d  %d\n",arr2[i]->getId());
+    // printf(" rat sie is %d \n",idsize);
+    // printf("number of users %d \n" , m_AllUsers.getSize());
+    for (int i = 0; i < m_AllMoviesRating.getSize(); i++)
+    {
+        //    printf(" the ids are : %d and the ratings %d and the vies %d\n",arr[i]->getId(),arr[i]->getMovieRating(),arr[i]->getMovieViews());
+        //    printf(" the ids are : %d  %d\n",arr2[i]->getId());
     }
     delete[] arr;
     delete[] arr2;
- //   printf("the group size is %d \n",watchGroup->getGroupsize());
-  //  watchGroup->printarr();
+    //   printf("the group size is %d \n",watchGroup->getGroupsize());
+    //  watchGroup->printarr();
     return UpdateRatingsMoviesTrees(movieId, watchMovie, 0, watchGroup->getGroupsize());
 }
 
@@ -333,7 +335,7 @@ StatusType streaming_database::get_all_movies(Genre genre, int *const output)
     if (!output)
         return StatusType::INVALID_INPUT;
     arrSize = get_all_movies_count(genre).ans();
- //   printf("arrsize is %d \n",arrSize);
+    //   printf("arrsize is %d \n",arrSize);
     if (arrSize <= 0)
         return StatusType::FAILURE;
     try
@@ -342,27 +344,27 @@ StatusType streaming_database::get_all_movies(Genre genre, int *const output)
         switch (genre)
         {
             case Genre::COMEDY:
-                if(m_COMEDY.getSize()<=0)
+                if (m_COMEDY.getSize() <= 0)
                     return StatusType::FAILURE;
                 m_COMEDY.BuildInOrderArray(arr);
                 break;
             case Genre::DRAMA:
-                if(m_DRAMA.getSize()<=0)
+                if (m_DRAMA.getSize() <= 0)
                     return StatusType::FAILURE;
                 m_DRAMA.BuildInOrderArray(arr);
                 break;
             case Genre::ACTION:
-                if(m_ACTION.getSize()<=0)
+                if (m_ACTION.getSize() <= 0)
                     return StatusType::FAILURE;
                 m_ACTION.BuildInOrderArray(arr);
                 break;
             case Genre::FANTASY:
-                if(m_FANTASY.getSize()<=0)
+                if (m_FANTASY.getSize() <= 0)
                     return StatusType::FAILURE;
                 m_FANTASY.BuildInOrderArray(arr);
                 break;
             case Genre::NONE:
-                if(m_AllMoviesRating.getSize()<=0)
+                if (m_AllMoviesRating.getSize() <= 0)
                     return StatusType::FAILURE;
                 m_AllMoviesRating.BuildInOrderArray(arr);
                 break;
@@ -430,7 +432,7 @@ StatusType streaming_database::rate_movie(int userId, int movieId, int rating)
             return StatusType::FAILURE;
     }
 
-   int i= watchMovie->UpdateMovieRating(rating);
+    int i = watchMovie->UpdateMovieRating(rating);
 
     return UpdateRatingsMoviesTrees(movieId, watchMovie, i, 0);
 
@@ -444,7 +446,7 @@ output_t<int> streaming_database::get_group_recommendation(int groupId)
         return StatusType::INVALID_INPUT;
 
     GroupData *watchGroup = m_AllGroups.Find(groupId);
-    if (watchGroup == nullptr)
+    if (watchGroup == nullptr || watchGroup->getGroupsize()<=0)
         return StatusType::FAILURE;
     favgenre = watchGroup->PopularGenre();
     switch (favgenre)
@@ -452,13 +454,13 @@ output_t<int> streaming_database::get_group_recommendation(int groupId)
         case Genre::COMEDY:
             if (m_COMEDY.getSize() != 0)
             {
-           //     printf(" comedyyyyy\n");
+                //     printf(" comedyyyyy\n");
                 return m_COMEDY.getMax()->getData()->getId();
             }
             break;
 
         case Genre::DRAMA:
-          //  printf(" dramaaa\n");
+            //  printf(" dramaaa\n");
             if (m_DRAMA.getSize() != 0)
             {
                 return m_DRAMA.getMax()->getData()->getId();
@@ -468,7 +470,7 @@ output_t<int> streaming_database::get_group_recommendation(int groupId)
         case Genre::ACTION:
             if (m_ACTION.getSize() != 0)
             {
-             //   printf(" action\n");
+                //   printf(" action\n");
 
                 return m_ACTION.getMax()->getData()->getId();
             }
@@ -477,7 +479,7 @@ output_t<int> streaming_database::get_group_recommendation(int groupId)
         case Genre::FANTASY:
             if (m_FANTASY.getSize() != 0)
             {
-           //     printf(" fantsyyy with watch %d \n");
+                //     printf(" fantsyyy with watch %d \n");
 
                 return m_FANTASY.getMax()->getData()->getId();
             }
@@ -495,12 +497,14 @@ streaming_database::UpdateRatingsMoviesTrees(int movieId, MovieData *movieData, 
 {
 
     MoviesRankingKey old_movie_key(movieId,
-                                   movieData->getMovieRating() - added_rating,movieData->getMovieViews() - added_views);
-  // printf(" ******************* the old key viewer is %d ,the new is : %d and id is %d and rating after is : %d and befor is : %d\n",movieData->getMovieViews() - added_views,movieData->getMovieViews(),movieId,movieData->getMovieRating(),movieData->getMovieRating()-added_rating);
-    MovieData* d = m_AllMoviesRating.Find(old_movie_key);
-   // printf("numver of ids is %d\n",m_AllMoviesId.getSize());
-    if (!d){
-      //  printf("its null - movie not found");
+                                   movieData->getMovieRating() - added_rating,
+                                   movieData->getMovieViews() - added_views);
+    // printf(" ******************* the old key viewer is %d ,the new is : %d and id is %d and rating after is : %d and befor is : %d\n",movieData->getMovieViews() - added_views,movieData->getMovieViews(),movieId,movieData->getMovieRating(),movieData->getMovieRating()-added_rating);
+    MovieData *d = m_AllMoviesRating.Find(old_movie_key);
+    // printf("numver of ids is %d\n",m_AllMoviesId.getSize());
+    if (!d)
+    {
+        //  printf("its null - movie not found");
     }
     MovieData **arr = new MovieData *[100];
     MovieData **arr2 = new MovieData *[100];
@@ -509,54 +513,55 @@ streaming_database::UpdateRatingsMoviesTrees(int movieId, MovieData *movieData, 
 //    int ratsize = m_AllMoviesRating.getSize();
     //printf(" rat sie is %d \n",ratsize);
 //    int idsize = m_AllMoviesId.getSize();
-   // printf(" rat sie is %d \n",idsize);
-    for(int i=0;i<m_AllMoviesRating.getSize();i++){
+    // printf(" rat sie is %d \n",idsize);
+    for (int i = 0; i < m_AllMoviesRating.getSize(); i++)
+    {
 //  printf(" the ids are : %d and the ratings %d and the vies %d\n",arr[i]->getId(),arr[i]->getMovieRating(),arr[i]->getMovieViews());
-          // printf(" the ids are : %d  %d\n",arr2[i]->getId());
-}
+        // printf(" the ids are : %d  %d\n",arr2[i]->getId());
+    }
     delete[] arr;
     delete[] arr2;
 
     // printf("the movies found ");
-    MoviesRankingKey new_movie_key(movieId, movieData->getMovieRating(),movieData->getMovieViews());
+    MoviesRankingKey new_movie_key(movieId, movieData->getMovieRating(), movieData->getMovieViews());
 
     if (m_AllMoviesRating.Remove(old_movie_key) == StatusType::SUCCESS)
     {
-       if( m_AllMoviesRating.Insert(new_movie_key, movieData) == StatusType::SUCCESS)
-    {
-
-   //    printf("***************i entered the if *************\n");
-        switch (movieData->getMovieGenre())
+        if (m_AllMoviesRating.Insert(new_movie_key, movieData) == StatusType::SUCCESS)
         {
-            case Genre::COMEDY:
-                if (m_COMEDY.Remove(old_movie_key) == StatusType::SUCCESS)
-                    return m_COMEDY.Insert(new_movie_key, movieData);
-                break;
-            case Genre::DRAMA:
-                if (m_DRAMA.Remove(old_movie_key) == StatusType::SUCCESS)
-                    return m_DRAMA.Insert(new_movie_key, movieData);
-                break;
-            case Genre::ACTION:
-                if (m_ACTION.Remove(old_movie_key) == StatusType::SUCCESS)
-                    return m_ACTION.Insert(new_movie_key, movieData);
-                break;
-            case Genre::FANTASY:
-                if (m_FANTASY.Remove(old_movie_key) == StatusType::SUCCESS)
-                    return m_FANTASY.Insert(new_movie_key, movieData);
-                break;
-            case Genre::NONE:
-                return StatusType::FAILURE;
+
+            //    printf("***************i entered the if *************\n");
+            switch (movieData->getMovieGenre())
+            {
+                case Genre::COMEDY:
+                    if (m_COMEDY.Remove(old_movie_key) == StatusType::SUCCESS)
+                        return m_COMEDY.Insert(new_movie_key, movieData);
+                    break;
+                case Genre::DRAMA:
+                    if (m_DRAMA.Remove(old_movie_key) == StatusType::SUCCESS)
+                        return m_DRAMA.Insert(new_movie_key, movieData);
+                    break;
+                case Genre::ACTION:
+                    if (m_ACTION.Remove(old_movie_key) == StatusType::SUCCESS)
+                        return m_ACTION.Insert(new_movie_key, movieData);
+                    break;
+                case Genre::FANTASY:
+                    if (m_FANTASY.Remove(old_movie_key) == StatusType::SUCCESS)
+                        return m_FANTASY.Insert(new_movie_key, movieData);
+                    break;
+                case Genre::NONE:
+                    return StatusType::FAILURE;
+
+            }
+
+            return StatusType::FAILURE;
 
         }
-
+        //  printf("***************i didnt entered the if problem with insert*************\n");
         return StatusType::FAILURE;
 
     }
-    //  printf("***************i didnt entered the if problem with insert*************\n");
-        return StatusType::FAILURE;
-
-    }
-   // printf("***************i didnt entered the if problem with remove*************\n");
+    // printf("***************i didnt entered the if problem with remove*************\n");
 
     return StatusType::FAILURE;
 
