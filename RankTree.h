@@ -97,6 +97,7 @@ AVLNode<Key, Data> *RankTree<Key, Data>::getRoot() const
 {
     return this->root;
 }
+
 template<class Key, class Data>
 
 AVLNode<Key, Data> *RankTree<Key, Data>::getMax() const
@@ -237,7 +238,7 @@ AVLNode<Key, Data> *RankTree<Key, Data>::InsertNode(Key &key, Data &data, AVLNod
         {
             root = newElement;
             m_max = newElement;
-        } else if (key > this->m_max->getKey())
+        } else if (this->m_max && key > this->m_max->getKey())
         {
             m_max = newElement;
         }
@@ -456,6 +457,7 @@ void RankTree<Key, Data>::BuildInOrderArray(Data *InOrderArray)
     int index = 0;
     BuildInOrderArrayAux(root, InOrderArray, &index);
 }
+
 template<class Key, class Data>
 bool RankTree<Key, Data>::EmptyTree() const
 {
