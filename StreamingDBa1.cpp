@@ -506,9 +506,9 @@ streaming_database::UpdateRatingsMoviesTrees(int movieId, MovieData *movieData, 
     MovieData **arr2 = new MovieData *[100];
     m_AllMoviesId.BuildInOrderArray(arr2);
     m_AllMoviesRating.BuildInOrderArray(arr);
-    int ratsize = m_AllMoviesRating.getSize();
+//    int ratsize = m_AllMoviesRating.getSize();
     //printf(" rat sie is %d \n",ratsize);
-    int idsize = m_AllMoviesId.getSize();
+//    int idsize = m_AllMoviesId.getSize();
    // printf(" rat sie is %d \n",idsize);
     for(int i=0;i<m_AllMoviesRating.getSize();i++){
 //  printf(" the ids are : %d and the ratings %d and the vies %d\n",arr[i]->getId(),arr[i]->getMovieRating(),arr[i]->getMovieViews());
