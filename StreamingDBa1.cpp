@@ -290,9 +290,9 @@ StatusType streaming_database::group_watch(int groupId, int movieId)
     MovieData **arr2 = new MovieData *[100];
     m_AllMoviesId.BuildInOrderArray(arr2);
     m_AllMoviesRating.BuildInOrderArray(arr);
-int ratsize = m_AllMoviesRating.getSize();
+//int ratsize = m_AllMoviesRating.getSize();
  //   printf(" rat sie is %d \n",ratsize);
-int idsize = m_AllMoviesId.getSize();
+//int idsize = m_AllMoviesId.getSize();
    // printf(" rat sie is %d \n",idsize);
    // printf("number of users %d \n" , m_AllUsers.getSize());
     for(int i=0;i<m_AllMoviesRating.getSize();i++){
