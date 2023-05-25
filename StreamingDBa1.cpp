@@ -11,7 +11,7 @@ streaming_database::streaming_database()
 streaming_database::~streaming_database()
 {
     m_AllMoviesId.FreeData(m_AllMoviesId.getRoot());
-    m_AllGroups.FreeData(m_AllGroups.getRoot());
+   m_AllGroups.FreeData(m_AllGroups.getRoot());
     m_AllUsers.FreeData(m_AllUsers.getRoot());
 }
 
@@ -204,6 +204,8 @@ StatusType streaming_database::remove_group(int groupId)
 
     if (m_AllGroups.Remove(groupId) == StatusType::SUCCESS)
     {
+       // if(removeGroup->Empty())
+           // return StatusType::SUCCESS;
         removeGroup->deleteUserID();
         delete removeGroup;
         return StatusType::SUCCESS;
@@ -276,8 +278,9 @@ StatusType streaming_database::group_watch(int groupId, int movieId)
     }
     GroupData *watchGroup = m_AllGroups.Find(groupId);
     MovieData *watchMovie = m_AllMoviesId.Find(movieId);
-    if (watchGroup == nullptr || watchMovie == nullptr)
+    if (watchGroup == nullptr || watchMovie == nullptr || watchGroup->Empty())
         return StatusType::FAILURE;
+
     if (watchMovie->getMovieStatus())
     {
         if (!watchGroup->getVipStatus())
@@ -286,21 +289,21 @@ StatusType streaming_database::group_watch(int groupId, int movieId)
 
     watchGroup->updateTogtherViews(watchMovie);
  //  printf(" group %d , size is %d\n*******",groupId,watchGroup->getGroupsize());
-    MovieData **arr = new MovieData *[100];
-    MovieData **arr2 = new MovieData *[100];
-    m_AllMoviesId.BuildInOrderArray(arr2);
-    m_AllMoviesRating.BuildInOrderArray(arr);
-int ratsize = m_AllMoviesRating.getSize();
+ //   MovieData **arr = new MovieData *[100];
+  //  MovieData **arr2 = new MovieData *[100];
+  //  m_AllMoviesId.BuildInOrderArray(arr2);
+  //  m_AllMoviesRating.BuildInOrderArray(arr);
+//int ratsize = m_AllMoviesRating.getSize();
  //   printf(" rat sie is %d \n",ratsize);
-int idsize = m_AllMoviesId.getSize();
+//int idsize = m_AllMoviesId.getSize();
    // printf(" rat sie is %d \n",idsize);
    // printf("number of users %d \n" , m_AllUsers.getSize());
-    for(int i=0;i<m_AllMoviesRating.getSize();i++){
+  //  for(int i=0;i<m_AllMoviesRating.getSize();i++){
    //    printf(" the ids are : %d and the ratings %d and the vies %d\n",arr[i]->getId(),arr[i]->getMovieRating(),arr[i]->getMovieViews());
     //    printf(" the ids are : %d  %d\n",arr2[i]->getId());
-    }
-    delete[] arr;
-    delete[] arr2;
+   // }
+//    delete[] arr;
+ //   delete[] arr2;
  //   printf("the group size is %d \n",watchGroup->getGroupsize());
   //  watchGroup->printarr();
     return UpdateRatingsMoviesTrees(movieId, watchMovie, 0, watchGroup->getGroupsize());
@@ -329,9 +332,10 @@ output_t<int> streaming_database::get_all_movies_count(Genre genre)
 
 StatusType streaming_database::get_all_movies(Genre genre, int *const output)
 {
+
     int arrSize = 0;
     if (!output)
-        return StatusType::INVALID_INPUT;
+        return StatusType::FAILURE;
     arrSize = get_all_movies_count(genre).ans();
  //   printf("arrsize is %d \n",arrSize);
     if (arrSize <= 0)
@@ -444,7 +448,7 @@ output_t<int> streaming_database::get_group_recommendation(int groupId)
         return StatusType::INVALID_INPUT;
 
     GroupData *watchGroup = m_AllGroups.Find(groupId);
-    if (watchGroup == nullptr)
+    if (watchGroup == nullptr || watchGroup->Empty() || m_AllMoviesId.EmptyTree())
         return StatusType::FAILURE;
     favgenre = watchGroup->PopularGenre();
     switch (favgenre)
@@ -497,25 +501,25 @@ streaming_database::UpdateRatingsMoviesTrees(int movieId, MovieData *movieData, 
     MoviesRankingKey old_movie_key(movieId,
                                    movieData->getMovieRating() - added_rating,movieData->getMovieViews() - added_views);
   // printf(" ******************* the old key viewer is %d ,the new is : %d and id is %d and rating after is : %d and befor is : %d\n",movieData->getMovieViews() - added_views,movieData->getMovieViews(),movieId,movieData->getMovieRating(),movieData->getMovieRating()-added_rating);
-    MovieData* d = m_AllMoviesRating.Find(old_movie_key);
+   // MovieData* d = m_AllMoviesRating.Find(old_movie_key);
    // printf("numver of ids is %d\n",m_AllMoviesId.getSize());
-    if (!d){
+    //if (!d){
       //  printf("its null - movie not found");
-    }
-    MovieData **arr = new MovieData *[100];
-    MovieData **arr2 = new MovieData *[100];
-    m_AllMoviesId.BuildInOrderArray(arr2);
-    m_AllMoviesRating.BuildInOrderArray(arr);
-    int ratsize = m_AllMoviesRating.getSize();
+  //  }
+ //   MovieData **arr = new MovieData *[100];
+ //   MovieData **arr2 = new MovieData *[100];
+ //   m_AllMoviesId.BuildInOrderArray(arr2);
+   // m_AllMoviesRating.BuildInOrderArray(arr);
+  //  int ratsize = m_AllMoviesRating.getSize();
     //printf(" rat sie is %d \n",ratsize);
-    int idsize = m_AllMoviesId.getSize();
+ //   int idsize = m_AllMoviesId.getSize();
    // printf(" rat sie is %d \n",idsize);
-    for(int i=0;i<m_AllMoviesRating.getSize();i++){
+ //   for(int i=0;i<m_AllMoviesRating.getSize();i++){
 //  printf(" the ids are : %d and the ratings %d and the vies %d\n",arr[i]->getId(),arr[i]->getMovieRating(),arr[i]->getMovieViews());
           // printf(" the ids are : %d  %d\n",arr2[i]->getId());
-}
-    delete[] arr;
-    delete[] arr2;
+//}
+   // delete[] arr;
+  //  delete[] arr2;
 
     // printf("the movies found ");
     MoviesRankingKey new_movie_key(movieId, movieData->getMovieRating(),movieData->getMovieViews());
@@ -552,11 +556,9 @@ streaming_database::UpdateRatingsMoviesTrees(int movieId, MovieData *movieData, 
         return StatusType::FAILURE;
 
     }
-    //  printf("***************i didnt entered the if problem with insert*************\n");
         return StatusType::FAILURE;
 
     }
-   // printf("***************i didnt entered the if problem with remove*************\n");
 
     return StatusType::FAILURE;
 

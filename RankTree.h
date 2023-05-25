@@ -79,6 +79,9 @@ public:
     void setRoot(AVLNode<Key, Data> *newRoot);
 
     void BuildInOrderArray(Data *InOrderArray);
+
+    bool EmptyTree() const;
+
 };
 ////////////////////// Implementations for private//////////////
 
@@ -453,6 +456,11 @@ void RankTree<Key, Data>::BuildInOrderArray(Data *InOrderArray)
 {
     int index = 0;
     BuildInOrderArrayAux(root, InOrderArray, &index);
+}
+template<class Key, class Data>
+bool RankTree<Key, Data>::EmptyTree() const
+{
+    return size <= 0;
 }
 
 #endif //STREAMINGDBA1_CPP_RankTree_H
