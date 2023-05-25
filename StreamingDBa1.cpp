@@ -446,8 +446,12 @@ output_t<int> streaming_database::get_group_recommendation(int groupId)
         return StatusType::INVALID_INPUT;
 
     GroupData *watchGroup = m_AllGroups.Find(groupId);
-    if (watchGroup == nullptr || watchGroup->getGroupsize()<=0)
+    if (watchGroup == nullptr || watchGroup->getGroupsize() <= 0)
+    {
+        watchGroup = nullptr;
         return StatusType::FAILURE;
+    }
+
     favgenre = watchGroup->PopularGenre();
     switch (favgenre)
     {
