@@ -13,6 +13,10 @@ bool GroupData::getVipStatus() const
 {
     return m_vip;
 }
+bool GroupData::Empty() const
+{
+    return m_GroupUserstree.EmptyTree();
+}
 
 
 int GroupData::getGroupsize() const

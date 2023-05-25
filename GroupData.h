@@ -31,6 +31,7 @@ public:
 
     bool getVipStatus() const;
 
+    bool Empty () const;
 
     int getGroupsize() const;
 
