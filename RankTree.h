@@ -263,7 +263,7 @@ AVLNode<Key, Data> *RankTree<Key, Data>::InsertNode(Key &key, Data &data, AVLNod
     }
     return balancedNode;
 }
-
+//
 template<class Key, class Data>
 AVLNode<Key, Data> *RankTree<Key, Data>::DeleteNode(const Key &key, AVLNode<Key, Data> *node)
 {
