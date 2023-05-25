@@ -321,7 +321,7 @@ AVLNode<Key, Data> *RankTree<Key, Data>::DeleteNode(const Key &key, AVLNode<Key,
 
     node->updateParameters();
     node = MakeBalance(node);
-    if (node->getRightChild() == nullptr)
+    if (node && node->getRightChild() == nullptr)
     {
         m_max = node;
     }
