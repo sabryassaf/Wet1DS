@@ -277,7 +277,7 @@ StatusType streaming_database::group_watch(int groupId, int movieId)
     }
     GroupData *watchGroup = m_AllGroups.Find(groupId);
     MovieData *watchMovie = m_AllMoviesId.Find(movieId);
-    if (watchGroup == nullptr || watchMovie == nullptr)
+    if (watchGroup == nullptr || watchMovie == nullptr || watchGroup->getGroupsize() <= 0)
         return StatusType::FAILURE;
     if (watchMovie->getMovieStatus())
     {
