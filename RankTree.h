@@ -231,8 +231,8 @@ AVLNode<Key, Data> *RankTree<Key, Data>::InsertNode(Key &key, Data &data, AVLNod
         {
             return nullptr;
         }
-        newElement->setKey(key);
-        newElement->setData(data);
+//        newElement->setKey(key);
+//        newElement->setData(data);
         newElement->setHeight(0);
         if (root == nullptr)
         {
@@ -293,10 +293,14 @@ AVLNode<Key, Data> *RankTree<Key, Data>::DeleteNode(const Key &key, AVLNode<Key,
             {
                 tempNode = node->getRightChild();
             }
-            tempNode->setParent(node->getParent());
+
             if (root == node)
             {
                 root = tempNode;
+                root->setParent(nullptr);
+            } else
+            {
+                tempNode->setParent(node->getParent());
             }
 
             delete node;
