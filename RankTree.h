@@ -387,9 +387,8 @@ StatusType RankTree<Key, Data>::Insert(Key &key, Data &data)
         return StatusType::FAILURE;
     }
 
-    AVLNode<Key, Data> *test;
-    test = InsertNode(key, data, root);
-    if (test == nullptr)
+    root = InsertNode(key, data, root);
+    if (root == nullptr)
     {
         return StatusType::ALLOCATION_ERROR;
     }
