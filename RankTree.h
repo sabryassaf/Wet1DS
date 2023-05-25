@@ -217,7 +217,7 @@ AVLNode<Key, Data> *RankTree<Key, Data>::MakeBalance(AVLNode<Key, Data> *node)
             return RollingRR(node);
         }
     }
-//    root->setParent(nullptr);
+    root->setParent(nullptr);
     return node;
 }
 
