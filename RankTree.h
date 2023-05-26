@@ -312,14 +312,14 @@ AVLNode<Key, Data> *RankTree<Key, Data>::DeleteNode(const Key &key, AVLNode<Key,
             {
                 root = nullptr;
             }
-            if (node->getParent()->getRightChild() == node)
-            {
-                node->getParent()->setRightChild(nullptr);
-            }
-            if (node->getParent()->getLeftChild() == node)
-            {
-                node->getParent()->setLeftChild(nullptr);
-            }
+//            if (node->getParent()->getRightChild() == node)
+//            {
+//                node->getParent()->setRightChild(nullptr);
+//            }
+//            if (node->getParent()->getLeftChild() == node)
+//            {
+//                node->getParent()->setLeftChild(nullptr);
+//            }
             delete node;
             return nullptr;
         }
