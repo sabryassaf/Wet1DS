@@ -82,6 +82,8 @@ public:
 
     bool EmptyTree() const;
 
+    void setNewMax();
+
 };
 ////////////////////// Implementations for private//////////////
 
@@ -97,6 +99,7 @@ AVLNode<Key, Data> *RankTree<Key, Data>::getRoot() const
 {
     return this->root;
 }
+
 template<class Key, class Data>
 
 AVLNode<Key, Data> *RankTree<Key, Data>::getMax() const
@@ -230,17 +233,19 @@ AVLNode<Key, Data> *RankTree<Key, Data>::InsertNode(Key &key, Data &data, AVLNod
         {
             return nullptr;
         }
-        newElement->setKey(key);
-        newElement->setData(data);
+//        newElement->setKey(key);
+//        newElement->setData(data);
         newElement->setHeight(0);
         if (root == nullptr)
         {
             root = newElement;
-            m_max = newElement;
-        } else if (key > this->m_max->getKey())
-        {
+
             m_max = newElement;
         }
+//        else if (this->m_max && key > this->m_max->getKey())
+//        {
+//            m_max = newElement;
+//        }
         return newElement;
     } else
     {
@@ -263,6 +268,8 @@ AVLNode<Key, Data> *RankTree<Key, Data>::InsertNode(Key &key, Data &data, AVLNod
     return balancedNode;
 }
 
+
+//
 template<class Key, class Data>
 AVLNode<Key, Data> *RankTree<Key, Data>::DeleteNode(const Key &key, AVLNode<Key, Data> *node)
 {
@@ -292,10 +299,15 @@ AVLNode<Key, Data> *RankTree<Key, Data>::DeleteNode(const Key &key, AVLNode<Key,
             {
                 tempNode = node->getRightChild();
             }
-            tempNode->setParent(node->getParent());
+
             if (root == node)
             {
                 root = tempNode;
+                root->setParent(nullptr);
+//                m_max = root;
+            } else
+            {
+                tempNode->setParent(node->getParent());
             }
 
             delete node;
@@ -306,7 +318,6 @@ AVLNode<Key, Data> *RankTree<Key, Data>::DeleteNode(const Key &key, AVLNode<Key,
             {
                 root = nullptr;
             }
-
             delete node;
             return nullptr;
         }
@@ -320,10 +331,10 @@ AVLNode<Key, Data> *RankTree<Key, Data>::DeleteNode(const Key &key, AVLNode<Key,
 
     node->updateParameters();
     node = MakeBalance(node);
-    if (node->getRightChild() == nullptr)
-    {
-        m_max = node;
-    }
+//    if (node && node->getRightChild() == nullptr && node->getKey() > m_max->getKey())
+//    {
+//        m_max = node;
+//    }
     return node;
 }
 
@@ -387,12 +398,12 @@ StatusType RankTree<Key, Data>::Insert(Key &key, Data &data)
         return StatusType::FAILURE;
     }
 
-    AVLNode<Key, Data> *test;
-    test = InsertNode(key, data, root);
-    if (test == nullptr)
+    root = InsertNode(key, data, root);
+    if (root == nullptr)
     {
         return StatusType::ALLOCATION_ERROR;
     }
+    this->setNewMax();
     size++;
     return StatusType::SUCCESS;
 }
@@ -405,10 +416,30 @@ StatusType RankTree<Key, Data>::Remove(const Key &key)
     {
         return StatusType::FAILURE;
     }
+    m_max = nullptr;
+
     root = DeleteNode(key, root);
+
+    this->setNewMax();
+
     size--;
     return StatusType::SUCCESS;
+}
 
+template<class Key, class Data>
+void RankTree<Key, Data>::setNewMax()
+{
+    if (root == nullptr)
+    {
+        m_max = nullptr;
+        return;
+    }
+    AVLNode<Key, Data> *tmp = root;
+    while (tmp->getRightChild() != nullptr)
+    {
+        tmp = tmp->getRightChild();
+    }
+    m_max = tmp;
 }
 
 template<class Key, class Data>
@@ -457,6 +488,7 @@ void RankTree<Key, Data>::BuildInOrderArray(Data *InOrderArray)
     int index = 0;
     BuildInOrderArrayAux(root, InOrderArray, &index);
 }
+
 template<class Key, class Data>
 bool RankTree<Key, Data>::EmptyTree() const
 {
