@@ -403,10 +403,7 @@ StatusType RankTree<Key, Data>::Insert(Key &key, Data &data)
     {
         return StatusType::ALLOCATION_ERROR;
     }
-    if (key > m_max->getKey())
-    {
-        m_max = FindNode(key, root);
-    }
+    this->setNewMax();
     size++;
     return StatusType::SUCCESS;
 }
