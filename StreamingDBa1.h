@@ -15,9 +15,8 @@
 #ifndef STREAMINGDBA1_H_
 #define STREAMINGDBA1_H_
 
-#include "wet1util.h"
-#include "RankTree.h"
-#include "MovieData.h"
+//#include "RankTree.h"
+//#include "MovieData.h"
 #include "UserData.h"
 #include "GroupData.h"
 #include "MoviesRankingKey.h"
@@ -35,7 +34,7 @@ private:
     RankTree<MoviesRankingKey, MovieData *> m_FANTASY;
     RankTree<int, UserData *> m_AllUsers; //the key would be user id
     RankTree<int, GroupData *> m_AllGroups; //the key would be group id
-    StatusType UpdateRatingsMoviesTrees(int movieId, MovieData *movieData, int added_rating, int added_views);
+    StatusType UpdateRatingsMoviesTrees(int movieId, MovieData *movieData, double added_rating, int added_views);
 
 
 public:

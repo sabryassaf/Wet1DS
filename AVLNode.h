@@ -5,8 +5,6 @@
 #ifndef WET1_AVLNODE_H
 #define WET1_AVLNODE_H
 
-#include <exception>
-#include <string>
 
 enum struct NodeType
 {
@@ -16,18 +14,6 @@ enum struct NodeType
     ONLY_RIGHT_CHILD
 };
 
-class AVL_Node_Exceptions : public std::exception
-{
-    std::string m_message;
-public:
-    explicit AVL_Node_Exceptions(const std::string &message) : m_message(message)
-    {}
-
-    const std::string &what()
-    {
-        return m_message;
-    }
-};
 
 
 template<class Key, class Data>

@@ -6,7 +6,7 @@
 #define AVLNODE_H_MOVIEDATA_H
 
 
-#include "wet1util.h"
+//#include "wet1util.h"
 #include "RankTree.h"
 /*
 class DATA_Type_Exceptions : public std::exception
@@ -25,7 +25,7 @@ public:
 class MovieData {
 private:
     int m_id;
-    int m_rating;
+    double m_rating;
     Genre m_movieGenre;
     int m_views;
     bool m_vipStatus;
@@ -37,8 +37,8 @@ public:
     MovieData(int ratings, int MovieId, Genre genre, int Views, bool VipStatus);
     ~MovieData();
     void UpdateMovieViewer(int i);
-    int UpdateMovieRating(int i);
-    int getMovieRating() const;
+    double UpdateMovieRating(int i);
+    double getMovieRating() const;
     int getMovieViews() const;
     Genre getMovieGenre() const;
     int getId() const;

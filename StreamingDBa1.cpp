@@ -153,6 +153,9 @@ StatusType streaming_database::remove_user(int userId)
         if (removeUser->getGroupId() > 0)
         { //he is in a group
             GroupData *userGroup = m_AllGroups.Find(removeUser->getGroupId());
+            if(removeUser->getVipStatus()) {
+               userGroup->updateVIPCounter();
+            }
             if (userGroup->remove_user(userId) == StatusType::SUCCESS)
             {
                 delete removeUser;
@@ -435,7 +438,7 @@ StatusType streaming_database::rate_movie(int userId, int movieId, int rating)
             return StatusType::FAILURE;
     }
 
-    int i = watchMovie->UpdateMovieRating(rating);
+    double i = watchMovie->UpdateMovieRating(rating);
 
     return UpdateRatingsMoviesTrees(movieId, watchMovie, i, 0);
 
@@ -498,7 +501,7 @@ output_t<int> streaming_database::get_group_recommendation(int groupId)
 
 /////////////////////////////added functions to private section/////////////
 StatusType
-streaming_database::UpdateRatingsMoviesTrees(int movieId, MovieData *movieData, int added_rating, int added_views)
+streaming_database::UpdateRatingsMoviesTrees(int movieId, MovieData *movieData, double added_rating, int added_views)
 {
 
     MoviesRankingKey old_movie_key(movieId,

@@ -9,11 +9,11 @@ class MoviesRankingKey{
 
 private:
     int m_id;
-    int m_rating;
+    double m_rating;
     int m_viewers;
 public:
     MoviesRankingKey(int id,int viewers);
-    MoviesRankingKey(int id,int rating,int viewers);
+    MoviesRankingKey(int id,double rating,int viewers);
     MoviesRankingKey() = default;
     MoviesRankingKey(const MoviesRankingKey& copy);
     MoviesRankingKey& operator=(const MoviesRankingKey& copy) =default;
@@ -22,7 +22,7 @@ public:
     bool operator>(MoviesRankingKey &other) const;
     int getID()const;
     int getVIEWS()const;
-    int getRATINGS()const;
+    double getRATINGS()const;
 
 };
 

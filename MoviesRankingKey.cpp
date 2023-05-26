@@ -1,24 +1,12 @@
 //
 // Created by halam on 19/05/2023.
 //
-#include <exception>
-#include <string>
 #include "MoviesRankingKey.h"
-class Key_Type_Exceptions : public std::exception
-{
-    std::string m_message;
-public:
-    explicit Key_Type_Exceptions(const std::string &message) : m_message(message)
-    {}
 
-    const std::string &what()
-    {
-        return m_message;
-    }
-};
+
 
 MoviesRankingKey:: MoviesRankingKey(int id, int views) : m_id(id),m_rating(0),m_viewers(views){}
-MoviesRankingKey:: MoviesRankingKey(int id,int rating,int views) : m_id(id), m_rating(rating),m_viewers(views)
+MoviesRankingKey:: MoviesRankingKey(int id,double rating,int views) : m_id(id), m_rating(rating),m_viewers(views)
 {}
 MoviesRankingKey:: MoviesRankingKey(const MoviesRankingKey& copy){
     this->m_rating=copy.getRATINGS();
@@ -32,7 +20,7 @@ MoviesRankingKey:: MoviesRankingKey(const MoviesRankingKey& copy){
     int MoviesRankingKey:: getVIEWS()const{
         return m_viewers;
 }
-     int MoviesRankingKey:: getRATINGS()const {
+     double MoviesRankingKey:: getRATINGS()const {
          return m_rating;
 
 

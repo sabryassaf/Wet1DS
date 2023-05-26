@@ -4,20 +4,21 @@
 
 #include "GroupData.h"
 
-GroupData::GroupData(int Id) : m_id(Id), m_vip(false), m_MembersSum(0), m_GroupUserstree()
+GroupData::GroupData(int Id) : m_id(Id), m_vip(false), m_MembersSum(0), m_GroupUserstree() , m_VIPCounter(0)
 {}
 
-GroupData::~GroupData() = default;
+GroupData::~GroupData(){}
+
 
 bool GroupData::getVipStatus() const
 {
     return m_vip;
 }
+
 bool GroupData::Empty() const
 {
     return m_GroupUserstree.EmptyTree();
 }
-
 
 int GroupData::getGroupsize() const
 {
@@ -31,6 +32,8 @@ StatusType GroupData::add_user(int userkey, UserData *userdata)
         if (userdata->getVipStatus())
         {
             this->m_vip = true;
+            m_VIPCounter++;
+
         }
         m_MembersSum++;
         return StatusType::SUCCESS;
@@ -45,10 +48,10 @@ RankTree<int, UserData *> &GroupData::getGroupUsers()
     return m_GroupUserstree;
 }
 
+
 StatusType GroupData::remove_user(int key)
 {
     m_MembersSum--;
-
     return m_GroupUserstree.Remove(key);
 
 }
@@ -202,4 +205,16 @@ void GroupData::printarr()
     {
         return;
     }
+}
+
+int GroupData::getVIPCounter()const{
+    return m_VIPCounter;
+}
+
+void GroupData::updateVIPCounter()
+{
+  m_VIPCounter--;
+  if(m_VIPCounter <= 0)
+      m_vip= false;
+
 }

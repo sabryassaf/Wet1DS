@@ -5,7 +5,7 @@
 #ifndef AVLNODE_H_GROUPDATA_H
 #define AVLNODE_H_GROUPDATA_H
 
-#include "wet1util.h"
+//#include "wet1util.h"
 #include "UserData.h"
 #include "MovieData.h"
 #include "RankTree.h"
@@ -20,6 +20,7 @@ private:
     int m_MembersSum;
     RankTree<int, UserData *> m_GroupUserstree;
     int m_arrViewsSum[5] = {0, 0, 0, 0, 0};
+    int m_VIPCounter;
 
 public:
 
@@ -57,8 +58,12 @@ public:
 
     void printarr();
 
+    void updateVIPCounter();
 
-};
+    int getVIPCounter()const;
+
+
+    };
 
 
 #endif //AVLNODE_H_GROUPDATA_H
