@@ -237,33 +237,34 @@ AVLNode<Key, Data> *RankTree<Key, Data>::InsertNode(Key &key, Data &data, AVLNod
         if (root == nullptr)
         {
             root = newElement;
+        }
 //            m_max = newElement;
 //        } else if (this->m_max && key > this->m_max->getKey())
 //        {
 //            m_max = newElement;
 //        }
-            return newElement;
-        } else
+        return newElement;
+    } else
+    {
+        if (key > node->getKey())
         {
-            if (key > node->getKey())
-            {
-                AVLNode<Key, Data> *newNode = InsertNode(key, data, node->getRightChild());
-                node->setRightChild(newNode);
-            } else if (key < node->getKey())
-            {
-                AVLNode<Key, Data> *newNode = InsertNode(key, data, node->getLeftChild());
-                node->setLeftChild(newNode);
-            }
-        }
-        node->updateParameters();
-        AVLNode<Key, Data> *balancedNode = MakeBalance(node);
-        if (node == this->root)
+            AVLNode<Key, Data> *newNode = InsertNode(key, data, node->getRightChild());
+            node->setRightChild(newNode);
+        } else if (key < node->getKey())
         {
-            this->root = balancedNode;
+            AVLNode<Key, Data> *newNode = InsertNode(key, data, node->getLeftChild());
+            node->setLeftChild(newNode);
         }
-        return balancedNode;
     }
+    node->updateParameters();
+    AVLNode<Key, Data> *balancedNode = MakeBalance(node);
+    if (node == this->root)
+    {
+        this->root = balancedNode;
+    }
+    return balancedNode;
 }
+
 
 //
 template<class Key, class Data>
@@ -398,10 +399,9 @@ StatusType RankTree<Key, Data>::Insert(Key &key, Data &data)
     AVLNode<Key, Data> *tempForMax = root;
     while (tempForMax->getRightChild())
     {
-        tempForMax=tempForMax->getRightChild();
+        tempForMax = tempForMax->getRightChild();
     }
     m_max = tempForMax;
-    delete tempForMax;
     if (root == nullptr)
     {
         return StatusType::ALLOCATION_ERROR;
@@ -422,10 +422,9 @@ StatusType RankTree<Key, Data>::Remove(const Key &key)
     AVLNode<Key, Data> *tempForMax = root;
     while (tempForMax->getRightChild())
     {
-        tempForMax=tempForMax->getRightChild();
+        tempForMax = tempForMax->getRightChild();
     }
     m_max = tempForMax;
-    delete tempForMax;
     size--;
     return StatusType::SUCCESS;
 }
