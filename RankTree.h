@@ -237,9 +237,10 @@ AVLNode<Key, Data> *RankTree<Key, Data>::InsertNode(Key &key, Data &data, AVLNod
         if (root == nullptr)
         {
             root = newElement;
+
+            m_max = newElement;
         }
-//            m_max = newElement;
-//        } else if (this->m_max && key > this->m_max->getKey())
+//        else if (this->m_max && key > this->m_max->getKey())
 //        {
 //            m_max = newElement;
 //        }
@@ -270,6 +271,16 @@ AVLNode<Key, Data> *RankTree<Key, Data>::InsertNode(Key &key, Data &data, AVLNod
 template<class Key, class Data>
 AVLNode<Key, Data> *RankTree<Key, Data>::DeleteNode(const Key &key, AVLNode<Key, Data> *node)
 {
+    if (key == m_max->getKey())
+    {
+        if (root == node)
+        {
+            root = nullptr;
+        }
+        m_max = m_max->getParent();
+        delete node;
+        return nullptr;
+    }
     if (node == nullptr)
     {
         return nullptr;
@@ -396,15 +407,13 @@ StatusType RankTree<Key, Data>::Insert(Key &key, Data &data)
     }
 
     root = InsertNode(key, data, root);
-    AVLNode<Key, Data> *tempForMax = root;
-    while (tempForMax->getRightChild())
-    {
-        tempForMax = tempForMax->getRightChild();
-    }
-    m_max = tempForMax;
     if (root == nullptr)
     {
         return StatusType::ALLOCATION_ERROR;
+    }
+    if (key > m_max->getKey())
+    {
+        m_max = FindNode(key, root);
     }
     size++;
     return StatusType::SUCCESS;
@@ -418,13 +427,13 @@ StatusType RankTree<Key, Data>::Remove(const Key &key)
     {
         return StatusType::FAILURE;
     }
+//    AVLNode<Key, Data> * maxHolder = new AVLNode<Key, Data>(m_max->getKey(), m_max->getData());
     root = DeleteNode(key, root);
-    AVLNode<Key, Data> *tempForMax = root;
-    while (tempForMax->getRightChild())
-    {
-        tempForMax = tempForMax->getRightChild();
-    }
-    m_max = tempForMax;
+//    if (maxHolder->getKey() == key)
+//    {
+//        m_max = maxHolder->getParent();
+//    }
+//    delete maxHolder;
     size--;
     return StatusType::SUCCESS;
 }

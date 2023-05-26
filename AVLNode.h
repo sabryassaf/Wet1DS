@@ -48,7 +48,7 @@ class AVLNode
 public:
     AVLNode(Key key, Data data);
 
-    AVLNode( AVLNode<Key, Data>& other);
+    AVLNode(AVLNode<Key, Data> &other);
 
     ~AVLNode();
 
@@ -58,7 +58,7 @@ public:
 
     void setParent(AVLNode *node);
 
-    void setData(Data & data);
+    void setData(Data &data);
 
     void setHeight(int i);
 
@@ -86,14 +86,15 @@ public:
 
     bool operator>(AVLNode &compare) const;
 
-    void swap(AVLNode* node);
+    void swap(AVLNode *node);
 
 };
 
-template <class Key ,class Data>
-void AVLNode<Key,Data>::swap(AVLNode* node){
+template<class Key, class Data>
+void AVLNode<Key, Data>::swap(AVLNode *node)
+{
     Key tempKey = this->m_key;
-    Data  tempVal = this->m_data;
+    Data tempVal = this->m_data;
     this->m_key = node->m_key;
     this->m_data = node->m_data;
     node->m_key = tempKey;
@@ -101,21 +102,25 @@ void AVLNode<Key,Data>::swap(AVLNode* node){
 }
 
 
-template <class Key, class Data>
-AVLNode<Key, Data>::AVLNode( AVLNode<Key, Data>& other) {
+template<class Key, class Data>
+AVLNode<Key, Data>::AVLNode(AVLNode<Key, Data> &other)
+{
     this->m_key = other.m_key;
     this->m_data = other.m_data;
 
-    if (other.m_leftChild != nullptr) {
+    if (other.m_leftChild != nullptr)
+    {
         this->m_leftChild = new AVLNode<Key, Data>(*other.m_leftChild);
     }
-    if (other.m_rightChild != nullptr) {
+    if (other.m_rightChild != nullptr)
+    {
         this->m_rightChild = new AVLNode<Key, Data>(*other.m_rightChild);
     }
 }
 
 template<class Key, class Data>
-void AVLNode<Key, Data>::setHeight(int i){
+void AVLNode<Key, Data>::setHeight(int i)
+{
     this->m_height = i;
 }
 
@@ -126,7 +131,7 @@ void AVLNode<Key, Data>::setKey(Key key)
 }
 
 template<class Key, class Data>
-void AVLNode<Key, Data>::setData(Data & data)
+void AVLNode<Key, Data>::setData(Data &data)
 {
     this->m_data = data;
 }
@@ -162,9 +167,11 @@ AVLNode<Key, Data> *AVLNode<Key, Data>::getRightChild() const
 }
 
 template<class Key, class Data>
-AVLNode<Key, Data> *AVLNode<Key, Data>::getParent() const {
+AVLNode<Key, Data> *AVLNode<Key, Data>::getParent() const
+{
     return m_parent;
 }
+
 template<class Key, class Data>
 int AVLNode<Key, Data>::getBalanceFactor() const
 {
@@ -255,8 +262,8 @@ void AVLNode<Key, Data>::updateParameters()
             this->m_balanceFactor = 0;
             break;
         default:
-            this->m_height=0;
-            this->m_balanceFactor=0;
+            this->m_height = 0;
+            this->m_balanceFactor = 0;
             break;
     }
 }
@@ -264,7 +271,8 @@ void AVLNode<Key, Data>::updateParameters()
 template<class Key, class Data>
 void AVLNode<Key, Data>::setRightChild(AVLNode *node)
 {
-    if (node== nullptr){
+    if (node == nullptr)
+    {
         m_rightChild = nullptr;
         updateParameters();
         return;
@@ -280,7 +288,8 @@ void AVLNode<Key, Data>::setRightChild(AVLNode *node)
 template<class Key, class Data>
 void AVLNode<Key, Data>::setLeftChild(AVLNode *node)
 {
-    if (node== nullptr){
+    if (node == nullptr)
+    {
         m_leftChild = nullptr;
         updateParameters();
         return;
