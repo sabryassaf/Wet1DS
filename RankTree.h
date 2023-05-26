@@ -82,6 +82,8 @@ public:
 
     bool EmptyTree() const;
 
+    void setNewMax();
+
 };
 ////////////////////// Implementations for private//////////////
 
@@ -271,16 +273,6 @@ AVLNode<Key, Data> *RankTree<Key, Data>::InsertNode(Key &key, Data &data, AVLNod
 template<class Key, class Data>
 AVLNode<Key, Data> *RankTree<Key, Data>::DeleteNode(const Key &key, AVLNode<Key, Data> *node)
 {
-    if (key == m_max->getKey())
-    {
-        if (root == node)
-        {
-            root = nullptr;
-        }
-        m_max = m_max->getParent();
-        delete node;
-        return nullptr;
-    }
     if (node == nullptr)
     {
         return nullptr;
@@ -427,15 +419,30 @@ StatusType RankTree<Key, Data>::Remove(const Key &key)
     {
         return StatusType::FAILURE;
     }
-//    AVLNode<Key, Data> * maxHolder = new AVLNode<Key, Data>(m_max->getKey(), m_max->getData());
+    m_max = nullptr;
+
     root = DeleteNode(key, root);
-//    if (maxHolder->getKey() == key)
-//    {
-//        m_max = maxHolder->getParent();
-//    }
-//    delete maxHolder;
+
+    this->setNewMax();
+
     size--;
     return StatusType::SUCCESS;
+}
+
+template<class Key, class Data>
+void RankTree<Key, Data>::setNewMax()
+{
+    if (root == nullptr)
+    {
+        m_max = nullptr;
+        return;
+    }
+    AVLNode<Key, Data> *tmp = root;
+    while (tmp->getRightChild() != nullptr)
+    {
+        tmp = tmp->getRightChild();
+    }
+    m_max = tmp;
 }
 
 template<class Key, class Data>
