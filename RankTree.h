@@ -237,31 +237,32 @@ AVLNode<Key, Data> *RankTree<Key, Data>::InsertNode(Key &key, Data &data, AVLNod
         if (root == nullptr)
         {
             root = newElement;
-            m_max = newElement;
-        } else if (this->m_max && key > this->m_max->getKey())
+//            m_max = newElement;
+//        } else if (this->m_max && key > this->m_max->getKey())
+//        {
+//            m_max = newElement;
+//        }
+            return newElement;
+        } else
         {
-            m_max = newElement;
+            if (key > node->getKey())
+            {
+                AVLNode<Key, Data> *newNode = InsertNode(key, data, node->getRightChild());
+                node->setRightChild(newNode);
+            } else if (key < node->getKey())
+            {
+                AVLNode<Key, Data> *newNode = InsertNode(key, data, node->getLeftChild());
+                node->setLeftChild(newNode);
+            }
         }
-        return newElement;
-    } else
-    {
-        if (key > node->getKey())
+        node->updateParameters();
+        AVLNode<Key, Data> *balancedNode = MakeBalance(node);
+        if (node == this->root)
         {
-            AVLNode<Key, Data> *newNode = InsertNode(key, data, node->getRightChild());
-            node->setRightChild(newNode);
-        } else if (key < node->getKey())
-        {
-            AVLNode<Key, Data> *newNode = InsertNode(key, data, node->getLeftChild());
-            node->setLeftChild(newNode);
+            this->root = balancedNode;
         }
+        return balancedNode;
     }
-    node->updateParameters();
-    AVLNode<Key, Data> *balancedNode = MakeBalance(node);
-    if (node == this->root)
-    {
-        this->root = balancedNode;
-    }
-    return balancedNode;
 }
 
 //
@@ -299,6 +300,7 @@ AVLNode<Key, Data> *RankTree<Key, Data>::DeleteNode(const Key &key, AVLNode<Key,
             {
                 root = tempNode;
                 root->setParent(nullptr);
+//                m_max = root;
             } else
             {
                 tempNode->setParent(node->getParent());
@@ -312,14 +314,6 @@ AVLNode<Key, Data> *RankTree<Key, Data>::DeleteNode(const Key &key, AVLNode<Key,
             {
                 root = nullptr;
             }
-//            if (node->getParent()->getRightChild() == node)
-//            {
-//                node->getParent()->setRightChild(nullptr);
-//            }
-//            if (node->getParent()->getLeftChild() == node)
-//            {
-//                node->getParent()->setLeftChild(nullptr);
-//            }
             delete node;
             return nullptr;
         }
@@ -333,10 +327,10 @@ AVLNode<Key, Data> *RankTree<Key, Data>::DeleteNode(const Key &key, AVLNode<Key,
 
     node->updateParameters();
     node = MakeBalance(node);
-    if (node && node->getRightChild() == nullptr && node->getKey() > m_max->getKey())
-    {
-        m_max = node;
-    }
+//    if (node && node->getRightChild() == nullptr && node->getKey() > m_max->getKey())
+//    {
+//        m_max = node;
+//    }
     return node;
 }
 
@@ -401,6 +395,12 @@ StatusType RankTree<Key, Data>::Insert(Key &key, Data &data)
     }
 
     root = InsertNode(key, data, root);
+    AVLNode<Key, Data> *tempForMax = root;
+    while (tempForMax->getRightChild())
+    {
+        tempForMax=tempForMax->getRightChild();
+    }
+    m_max = tempForMax;
     if (root == nullptr)
     {
         return StatusType::ALLOCATION_ERROR;
@@ -418,9 +418,14 @@ StatusType RankTree<Key, Data>::Remove(const Key &key)
         return StatusType::FAILURE;
     }
     root = DeleteNode(key, root);
+    AVLNode<Key, Data> *tempForMax = root;
+    while (tempForMax->getRightChild())
+    {
+        tempForMax=tempForMax->getRightChild();
+    }
+    m_max = tempForMax;
     size--;
     return StatusType::SUCCESS;
-
 }
 
 template<class Key, class Data>
