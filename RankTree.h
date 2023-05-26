@@ -401,6 +401,7 @@ StatusType RankTree<Key, Data>::Insert(Key &key, Data &data)
         tempForMax=tempForMax->getRightChild();
     }
     m_max = tempForMax;
+    delete tempForMax;
     if (root == nullptr)
     {
         return StatusType::ALLOCATION_ERROR;
@@ -424,6 +425,7 @@ StatusType RankTree<Key, Data>::Remove(const Key &key)
         tempForMax=tempForMax->getRightChild();
     }
     m_max = tempForMax;
+    delete tempForMax;
     size--;
     return StatusType::SUCCESS;
 }
