@@ -3,11 +3,12 @@
 //
 
 #include "UserData.h"
-
+#define DEFAULT_GROUP_ID 0
+#define GENRE_NUMBERS 5
 
 UserData:: UserData()=default;
 
-UserData:: UserData(int Id, bool Status) : m_id(Id),m_groupViewsBefore{},m_AllViews{},m_vip(Status),m_groupId(0),m_group(nullptr)
+UserData:: UserData(int Id, bool Status) : m_id(Id),m_groupViewsBefore{},m_AllViews{},m_vip(Status),m_groupId(DEFAULT_GROUP_ID),m_group(nullptr)
 {}
 
 UserData:: ~UserData()  = default;
@@ -53,19 +54,17 @@ int UserData:: getNumViewsAlone(int i) const
 
 int UserData:: getNumViewsGroup(int i)
 {
-    if(m_groupId > 0 )
+    if(m_groupId > DEFAULT_GROUP_ID )
        return (m_group->getNumViewsIndex(i) - this->m_groupViewsBefore[i]);
 
     return 0;
 }
 
 void UserData:: ResetgroupIdPtr() {
-    this->m_groupId = 0;
-  //  this->m_group = nullptr;
-    int arr[5] = {0};
+    this->m_groupId = DEFAULT_GROUP_ID;
+    int arr[GENRE_NUMBERS] = {0};
     groupwatch(arr);
-   // m_group->getGenreViews(arr);
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < GENRE_NUMBERS; i++) {
         m_AllViews[i] += arr[i]; // we update the groups views for user just when we remove the group
     }
     this->m_group = nullptr;
@@ -83,7 +82,7 @@ GroupData* UserData:: getGrouptr() const{
 }
 
 void UserData::groupwatch(int* arr){
-    for(int i=0;i<5;i++){
+    for(int i=0;i<GENRE_NUMBERS;i++){
         arr[i]=m_group->getNumViewsIndex(i)-m_groupViewsBefore[i];
         if(arr[i]< 0)
             arr[i]=0;

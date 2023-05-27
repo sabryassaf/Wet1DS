@@ -8,7 +8,6 @@
 #include <iostream>
 #include "AVLNode.h"
 #include "wet1util.h"
-//#include "Data.h"
 
 template<class Key, class Data>
 class RankTree
@@ -69,8 +68,6 @@ public:
     StatusType Remove(const Key &key);
 
     Data Find(const Key &key);
-
-    bool ElementInTree(const Key &key);
 
     AVLNode<Key, Data> *getRoot() const;
 
@@ -219,7 +216,6 @@ AVLNode<Key, Data> *RankTree<Key, Data>::MakeBalance(AVLNode<Key, Data> *node)
             return RollingRR(node);
         }
     }
-//    root->setParent(nullptr);
     return node;
 }
 
@@ -233,8 +229,6 @@ AVLNode<Key, Data> *RankTree<Key, Data>::InsertNode(Key &key, Data &data, AVLNod
         {
             return nullptr;
         }
-//        newElement->setKey(key);
-//        newElement->setData(data);
         newElement->setHeight(0);
         if (root == nullptr)
         {
@@ -242,10 +236,7 @@ AVLNode<Key, Data> *RankTree<Key, Data>::InsertNode(Key &key, Data &data, AVLNod
 
             m_max = newElement;
         }
-//        else if (this->m_max && key > this->m_max->getKey())
-//        {
-//            m_max = newElement;
-//        }
+
         return newElement;
     } else
     {
@@ -331,10 +322,6 @@ AVLNode<Key, Data> *RankTree<Key, Data>::DeleteNode(const Key &key, AVLNode<Key,
 
     node->updateParameters();
     node = MakeBalance(node);
-//    if (node && node->getRightChild() == nullptr && node->getKey() > m_max->getKey())
-//    {
-//        m_max = node;
-//    }
     return node;
 }
 
@@ -453,16 +440,6 @@ Data RankTree<Key, Data>::Find(const Key &key)
     return tmp->getData();
 }
 
-template<class Key, class Data>
-bool RankTree<Key, Data>::ElementInTree(const Key &key)
-{
-    if (root == nullptr)
-    {
-        return false;
-    }
-
-    return this->FindNode(key, root) != nullptr;
-}
 
 template<class Key, class Data>
 int RankTree<Key, Data>::getSize() const
