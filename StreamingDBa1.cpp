@@ -4,7 +4,6 @@ streaming_database::streaming_database()
         : m_AllMoviesId(), m_AllMoviesRating(), m_COMEDY(), m_DRAMA(), m_ACTION(), m_FANTASY(), m_AllUsers(),
           m_AllGroups()
 {
-
     // TODO: Your code goes here
 }
 
@@ -26,7 +25,7 @@ StatusType streaming_database::add_movie(int movieId, Genre genre, int views, bo
     }
     try
     {
-        MovieData *new_movie_data = new MovieData(movieId, genre, views, vipOnly);
+        auto *new_movie_data = new MovieData(movieId, genre, views, vipOnly);
 
         if (m_AllMoviesId.Insert(movieId, new_movie_data) == StatusType::SUCCESS)
         {
@@ -47,9 +46,9 @@ StatusType streaming_database::add_movie(int movieId, Genre genre, int views, bo
                         break;
                     case Genre::FANTASY:
                         status = m_FANTASY.Insert(new_movie_key, new_movie_data);
-                        break;
+
                     case Genre::NONE:
-                        return StatusType::FAILURE;
+                        break;
                 }
 
                 if (status == StatusType::SUCCESS)
@@ -70,42 +69,40 @@ StatusType streaming_database::add_movie(int movieId, Genre genre, int views, bo
 
 StatusType streaming_database::remove_movie(int movieId)
 {
-    StatusType status = StatusType::FAILURE;;
+    StatusType status = StatusType::FAILURE;
     if (movieId <= 0)
     {
         return StatusType::INVALID_INPUT;
     }
     MovieData *removeMovie = m_AllMoviesId.Find(movieId);
-    if (!removeMovie)
+
+    if (m_AllMoviesId.Remove(movieId) == StatusType::SUCCESS )
     {
-        return StatusType::FAILURE;
-    }
-    MoviesRankingKey key(movieId, removeMovie->getMovieRating(), removeMovie->getMovieViews());
+        MoviesRankingKey key(movieId, removeMovie->getMovieRating(), removeMovie->getMovieViews());
 
-    if (m_AllMoviesId.Remove(movieId) == StatusType::SUCCESS && m_AllMoviesRating.Remove(key) == StatusType::SUCCESS)
-    { // removes the node object from the tree
-        switch (removeMovie->getMovieGenre())
-        {
-            case Genre::COMEDY:
-                status = m_COMEDY.Remove(key);
-                break;
-            case Genre::DRAMA:
-                status = m_DRAMA.Remove(key);
-                break;
-            case Genre::ACTION:
-                status = m_ACTION.Remove(key);
-                break;
-            case Genre::FANTASY:
-                status = m_FANTASY.Remove(key);
-                break;
-            case Genre::NONE:
-                break;
-        }
-        if (status == StatusType::SUCCESS)
-        {
-            delete removeMovie; //frees the memory allocated for the MovieData object in the data,
-            return StatusType::SUCCESS;
+        if (m_AllMoviesRating.Remove(key) == StatusType::SUCCESS)
+        { // removes the node object from the tree
 
+            switch (removeMovie->getMovieGenre()) {
+                case Genre::COMEDY:
+                    status = m_COMEDY.Remove(key);
+                    break;
+                case Genre::DRAMA:
+                    status = m_DRAMA.Remove(key);
+                    break;
+                case Genre::ACTION:
+                    status = m_ACTION.Remove(key);
+                    break;
+                case Genre::FANTASY:
+                    status = m_FANTASY.Remove(key);
+                case Genre::NONE:
+                    break;
+            }
+            if (status == StatusType::SUCCESS) {
+                delete removeMovie; //frees the memory allocated for the MovieData object in the data,
+                return StatusType::SUCCESS;
+
+            }
         }
     }
     return StatusType::FAILURE;
@@ -121,7 +118,7 @@ StatusType streaming_database::add_user(int userId, bool isVip)
     }
     try
     {
-        UserData *newUser = new UserData(userId, isVip);
+        auto *newUser = new UserData(userId, isVip);
 
         if (m_AllUsers.Insert(userId, newUser) == StatusType::SUCCESS)
         {
@@ -144,28 +141,17 @@ StatusType streaming_database::remove_user(int userId)
         return StatusType::INVALID_INPUT;
     }
     UserData *removeUser = m_AllUsers.Find(userId);
-    if (!removeUser)
-    {
-        return StatusType::FAILURE;
-    }
-    if (m_AllUsers.Remove(userId) == StatusType::SUCCESS)
-    {
-        if (removeUser->getGroupId() > 0)
-        { //he is in a group
-            GroupData *userGroup = m_AllGroups.Find(removeUser->getGroupId());
-            if(removeUser->getVipStatus()) {
-               userGroup->updateVIPCounter();
-            }
-            if (userGroup->remove_user(userId) == StatusType::SUCCESS)
-            {
-                delete removeUser;
-                return StatusType::SUCCESS;
-            }
-        } else
-        {
+    if (m_AllUsers.Remove(userId) == StatusType::SUCCESS) {
+        if (removeUser->getGroupId() > 0) { //he is in a group
+            GroupData *userGroup = removeUser->getGrouptr();
+            userGroup->remove_user(userId, removeUser->getVipStatus(),removeUser);
             delete removeUser;
             return StatusType::SUCCESS;
         }
+
+
+        delete removeUser;
+        return StatusType::SUCCESS;
     }
     return StatusType::FAILURE;
 
@@ -179,7 +165,7 @@ StatusType streaming_database::add_group(int groupId)
     }
     try
     {
-        GroupData *newGroup = new GroupData(groupId);
+        auto *newGroup = new GroupData(groupId);
         if (m_AllGroups.Insert(groupId, newGroup) == StatusType::SUCCESS)
         {
 
@@ -202,14 +188,10 @@ StatusType streaming_database::remove_group(int groupId)
         return StatusType::INVALID_INPUT;
     }
     GroupData *removeGroup = m_AllGroups.Find(groupId);
-    if (!removeGroup)
-        return StatusType::FAILURE;
 
     if (m_AllGroups.Remove(groupId) == StatusType::SUCCESS)
     {
-        // if(removeGroup->Empty())
-        // return StatusType::SUCCESS;
-        removeGroup->deleteUserID();
+        removeGroup->deleteUserIdPtr();
         delete removeGroup;
         return StatusType::SUCCESS;
 
@@ -223,18 +205,21 @@ StatusType streaming_database::add_user_to_group(int userId, int groupId)
     {
         return StatusType::INVALID_INPUT;
     }
-    if (m_AllUsers.Find(userId) == nullptr || m_AllGroups.Find(groupId) == nullptr)
+    GroupData *toGroup = m_AllGroups.Find(groupId);
+    UserData *addUser = m_AllUsers.Find(userId);
+
+    if ( toGroup== nullptr || addUser == nullptr)
     {
         return StatusType::FAILURE;
     }
+
     // check if user isn't already in a group
-    UserData *addUser = m_AllUsers.Find(userId);
     if (addUser->getGroupId() > 0)
         return StatusType::FAILURE;
-    GroupData *toGroup = m_AllGroups.Find(groupId);
+
     if (toGroup->add_user(userId, addUser) == StatusType::SUCCESS)
     {
-        addUser->UpdategroupID(groupId);
+        addUser->UpdateUserParameters(groupId,toGroup);
         return StatusType::SUCCESS;
 
     }
@@ -250,6 +235,7 @@ StatusType streaming_database::user_watch(int userId, int movieId)
     }
     UserData *watchUser = m_AllUsers.Find(userId);
     MovieData *watchMovie = m_AllMoviesId.Find(movieId);
+
     if (watchUser == nullptr || watchMovie == nullptr)
         return StatusType::FAILURE;
 
@@ -258,19 +244,14 @@ StatusType streaming_database::user_watch(int userId, int movieId)
         if (!watchUser->getVipStatus())
             return StatusType::FAILURE;
     }
-    if (watchUser->getGroupId() <= 0) // not in a group
-    {
-        watchUser->updateAloneViews(watchMovie->getMovieGenre());
-        watchMovie->UpdateMovieViewer(1);
-    } else
-    {
-        GroupData *group = m_AllGroups.Find(watchUser->getGroupId());
-        group->updatealoneviews(watchMovie->getMovieGenre());
-        watchUser->updateGroupViews(watchMovie->getMovieGenre());
-        watchMovie->UpdateMovieViewer(1);
-    }
-    return UpdateRatingsMoviesTrees(movieId, watchMovie, 0, 1);
+    watchUser->updateAloneViews(watchMovie->getMovieGenre());
 
+    if(watchUser->getGroupId() > 0) {
+        watchUser->getGrouptr()->updatealoneviews(watchMovie->getMovieGenre(),1);
+    }
+
+    watchMovie->UpdateMovieViewer(1);
+    return UpdateRatingsMoviesTrees(movieId, watchMovie, 0, 1);
 
 }
 
@@ -337,7 +318,7 @@ output_t<int> streaming_database::get_all_movies_count(Genre genre)
 StatusType streaming_database::get_all_movies(Genre genre, int *const output)
 {
 
-    int arrSize = 0;
+    int arrSize;
     if (!output)
         return StatusType::FAILURE;
     arrSize = get_all_movies_count(genre).ans();
@@ -346,7 +327,7 @@ StatusType streaming_database::get_all_movies(Genre genre, int *const output)
         return StatusType::FAILURE;
     try
     {
-        MovieData **arr = new MovieData *[arrSize];
+        auto **arr = new MovieData *[arrSize];
         switch (genre)
         {
             case Genre::COMEDY:
@@ -415,7 +396,6 @@ output_t<int> streaming_database::get_num_views(int userId, Genre genre)
             return watchUser->getNumViewsAlone(3) + watchUser->getNumViewsGroup(3);
         case Genre::NONE:
             return watchUser->getNumViewsAlone(4) + watchUser->getNumViewsGroup(4);
-
     }
     return StatusType::FAILURE;
 
@@ -507,28 +487,7 @@ streaming_database::UpdateRatingsMoviesTrees(int movieId, MovieData *movieData, 
     MoviesRankingKey old_movie_key(movieId,
                                    movieData->getMovieRating() - added_rating,
                                    movieData->getMovieViews() - added_views);
-    // printf(" ******************* the old key viewer is %d ,the new is : %d and id is %d and rating after is : %d and befor is : %d\n",movieData->getMovieViews() - added_views,movieData->getMovieViews(),movieId,movieData->getMovieRating(),movieData->getMovieRating()-added_rating);
-    // MovieData* d = m_AllMoviesRating.Find(old_movie_key);
-    // printf("numver of ids is %d\n",m_AllMoviesId.getSize());
-    //if (!d){
-    //  printf("its null - movie not found");
-    //  }
-    //   MovieData **arr = new MovieData *[100];
-    //   MovieData **arr2 = new MovieData *[100];
-    //   m_AllMoviesId.BuildInOrderArray(arr2);
-    // m_AllMoviesRating.BuildInOrderArray(arr);
-    //  int ratsize = m_AllMoviesRating.getSize();
-    //printf(" rat sie is %d \n",ratsize);
-    //   int idsize = m_AllMoviesId.getSize();
-    // printf(" rat sie is %d \n",idsize);
-    //   for(int i=0;i<m_AllMoviesRating.getSize();i++){
-//  printf(" the ids are : %d and the ratings %d and the vies %d\n",arr[i]->getId(),arr[i]->getMovieRating(),arr[i]->getMovieViews());
-    // printf(" the ids are : %d  %d\n",arr2[i]->getId());
-//}
-    // delete[] arr;
-    //  delete[] arr2;
 
-    // printf("the movies found ");
     MoviesRankingKey new_movie_key(movieId, movieData->getMovieRating(), movieData->getMovieViews());
 
     if (m_AllMoviesRating.Remove(old_movie_key) == StatusType::SUCCESS)

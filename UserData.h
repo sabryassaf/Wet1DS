@@ -5,28 +5,21 @@
 #ifndef AVLNODE_H_USERDATA_H
 #define AVLNODE_H_USERDATA_H
 #include "wet1util.h"
-/*
-class DATA_Type_Exceptions : public std::exception
-{
-    std::string m_message;
-public:
-    explicit DATA_Type_Exceptions(const std::string &message) : m_message(message)
-    {}
+#include "MovieData.h"
+#include "GroupData.h"
 
-    const std::string &what()
-    {
-        return m_message;
-    }
-};
-*/
+class GroupData;
+
 class UserData {
 private:
     int m_id;
     int m_aloneViews[5];
-    int m_groupViews[5];
+    int m_groupViewsBefore[5];
+    int m_AllViews[5];
     bool m_vip;
     bool m_groupMem;
     int m_groupId;
+    GroupData* m_group;
 
 public:
     UserData();
@@ -40,18 +33,26 @@ public:
     int getGroupId() const;
 
     int getUserId() const;
+
     void updateAloneViews(Genre genre);
 
     void updateGroupViews(Genre genre);
 
     int getNumViewsAlone(int i) const;
 
-    int getNumViewsGroup(int i) const;
+    int getNumViewsGroup(int i);
 
-    void ResetgroupID();
+    void ResetgroupIdPtr();
 
-    void UpdategroupID(int i);
-};
+    void UpdateUserParameters(int i,GroupData* ptr);
+
+    GroupData* getGrouptr() const;
+
+    void setGrouptr(GroupData* ptr);
+
+    void ResetgroupId();
+
+    };
 
 
 #endif //AVLNODE_H_USERDATA_H

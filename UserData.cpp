@@ -4,16 +4,11 @@
 
 #include "UserData.h"
 
+
 UserData:: UserData(){}
 
-UserData:: UserData(int Id, bool Status) : m_id(Id), m_vip(Status), m_groupMem(false), m_groupId(0)
-{
-    for (int i = 0; i < 5; i++)
-    {
-        m_aloneViews[i] = 0;
-        m_groupViews[i] = 0;
-    }
-}
+UserData:: UserData(int Id, bool Status) : m_id(Id), m_aloneViews{},m_groupViewsBefore{},m_AllViews{},m_vip(Status), m_groupMem(false), m_groupId(0),m_group(nullptr)
+{}
 
 UserData:: ~UserData()  = default;
 
@@ -36,65 +31,60 @@ void UserData::  updateAloneViews(Genre genre)
     switch (genre)
     {
         case Genre::COMEDY:
-            m_aloneViews[0]++;
+            m_AllViews[0]++;
             break;
         case Genre::DRAMA:
-            m_aloneViews[1]++;
+            m_AllViews[1]++;
             break;
         case Genre::ACTION:
-            m_aloneViews[2]++;
+            m_AllViews[2]++;
             break;
         case Genre::FANTASY:
-            m_aloneViews[3]++;
+            m_AllViews[3]++;
             break;
         case Genre::NONE:
             break;
     }
-    m_aloneViews[4]++;
+    m_AllViews[4]++;
 
-}
-
-void UserData:: updateGroupViews(Genre genre)
-{
-
-
-    switch (genre)
-    {
-        case Genre::COMEDY:
-            m_groupViews[0]++;
-            break;
-        case Genre::DRAMA:
-            m_groupViews[1]++;
-            break;
-        case Genre::ACTION:
-            m_groupViews[2]++;
-            break;
-        case Genre::FANTASY:
-            m_groupViews[3]++;
-            break;
-        case Genre::NONE:
-            break;
-    }
-    m_groupViews[4]++;
 }
 
 int UserData:: getNumViewsAlone(int i) const
 {
-    return m_aloneViews[i];
+    return m_AllViews[i];
 }
 
-int UserData:: getNumViewsGroup(int i) const
+int UserData:: getNumViewsGroup(int i)
 {
-    //if(m_groupId <= 0)
-     //   return 0;
-    return m_groupViews[i];
-}
-void UserData:: ResetgroupID()
-{
-    this->m_groupId=0;
+    if(m_groupId > 0 )
+       return (m_group->getNumViewsIndex(i) - this->m_groupViewsBefore[i]);
+
+    return 0;
 }
 
-void UserData:: UpdategroupID(int i)
+void UserData:: ResetgroupIdPtr() {
+    this->m_groupId = 0;
+    this->m_group = nullptr;
+    int arr[5] = {0};
+    m_group->getGenreViews(arr);
+    for (int i = 0; i < 5; i++) {
+        m_AllViews[i] += (arr[i] - m_groupViewsBefore[i]); // we update the groups views for user just when we remove the group
+    }
+}
+void UserData:: UpdateUserParameters(int i,GroupData* ptr)
 {
     this->m_groupId=i;
+    this->m_group=ptr;
+    ptr->copyGroupArr(m_groupViewsBefore,m_AllViews);
+}
+
+GroupData* UserData:: getGrouptr() const{
+    return m_group;
+}
+void UserData:: setGrouptr(GroupData* ptr)
+{
+    m_group=ptr;
+}
+void UserData::ResetgroupId(){
+    m_id=0;
 }

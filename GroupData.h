@@ -5,11 +5,12 @@
 #ifndef AVLNODE_H_GROUPDATA_H
 #define AVLNODE_H_GROUPDATA_H
 
-//#include "wet1util.h"
+#include "wet1util.h"
 #include "UserData.h"
 #include "MovieData.h"
 #include "RankTree.h"
 
+class UserData;
 
 class GroupData
 {
@@ -19,8 +20,9 @@ private:
     bool m_vip;
     int m_MembersSum;
     RankTree<int, UserData *> m_GroupUserstree;
-    int m_arrViewsSum[5] = {0, 0, 0, 0, 0};
+    int m_arrViewsSum[5];
     int m_VIPCounter;
+    int m_MembersAloneViews[5];
 
 public:
 
@@ -42,7 +44,7 @@ public:
 
     RankTree<int, UserData *> &getGroupUsers();
 
-    StatusType remove_user(int key);
+    StatusType remove_user(int key,bool Status,UserData* userdata);
 
 
     void updateTogtherViews(MovieData *movie);
@@ -52,18 +54,22 @@ public:
 
     Genre PopularGenre();
 
-    StatusType deleteUserID();
+    StatusType deleteUserIdPtr();
 
-    void updatealoneviews(Genre genre);
+    void updatealoneviews(Genre genre,int i);
 
-    void printarr();
 
     void updateVIPCounter();
 
     int getVIPCounter()const;
 
+    void copyGroupArr(int* arr, int* aloneviews) ;
 
-    };
+    int  getNumViewsIndex(int i) const;
+
+
+};
+int findMaxIndex(const int* arr, int size);
 
 
 #endif //AVLNODE_H_GROUPDATA_H

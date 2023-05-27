@@ -4,10 +4,10 @@
 
 #include "GroupData.h"
 
-GroupData::GroupData(int Id) : m_id(Id), m_vip(false), m_MembersSum(0), m_GroupUserstree() , m_VIPCounter(0)
+GroupData::GroupData(int Id) : m_id(Id), m_vip(false), m_MembersSum(0), m_GroupUserstree() ,m_arrViewsSum{}, m_VIPCounter(0),m_MembersAloneViews{}
 {}
 
-GroupData::~GroupData(){}
+GroupData::~GroupData()=default;
 
 
 bool GroupData::getVipStatus() const
@@ -35,6 +35,9 @@ StatusType GroupData::add_user(int userkey, UserData *userdata)
             m_VIPCounter++;
 
         }
+        for(int i=0;i<5;i++){
+            m_MembersAloneViews[i]+=userdata->getNumViewsGroup(i)+ userdata->getNumViewsAlone(i);
+        }
         m_MembersSum++;
         return StatusType::SUCCESS;
     }
@@ -49,12 +52,50 @@ RankTree<int, UserData *> &GroupData::getGroupUsers()
 }
 
 
-StatusType GroupData::remove_user(int key)
+StatusType GroupData::remove_user(int key, bool Status,UserData* userdata)
 {
     m_MembersSum--;
+    if (Status) {
+        m_VIPCounter--;
+        if(m_VIPCounter <= 0)
+            m_vip= false;
+    }
+
+    for(int i=0;i<5;i++){
+
+        m_MembersAloneViews[i]-= userdata->getNumViewsAlone(i);
+    }
     return m_GroupUserstree.Remove(key);
+}
+void GroupData::updateTogtherViews(MovieData *movie){
+
+    if (m_MembersSum <= 0)
+        return;
+    switch (movie->getMovieGenre())
+    {
+        case Genre::COMEDY:
+            m_arrViewsSum[0]++;
+            break;
+        case Genre::DRAMA:
+            m_arrViewsSum[1]++;
+            break;
+        case Genre::ACTION:
+            m_arrViewsSum[2]++;
+            break;
+        case Genre::FANTASY:
+            m_arrViewsSum[3]++;
+            break;
+        case Genre::NONE:
+            break;
+
+    }
+    m_arrViewsSum[4]++;
+    movie->UpdateMovieViewer(m_MembersSum);
 
 }
+
+
+/*
 
 void GroupData::updateTogtherViews(MovieData *movie)
 {
@@ -62,7 +103,7 @@ void GroupData::updateTogtherViews(MovieData *movie)
         return;
     try
     {
-        UserData **arr = new UserData *[m_MembersSum];
+        auto **arr = new UserData *[m_MembersSum];
 
         m_GroupUserstree.BuildInOrderArray(arr);
         for (int i = 0; i < m_MembersSum; i++)
@@ -79,19 +120,19 @@ void GroupData::updateTogtherViews(MovieData *movie)
     }
 
 }
-
-StatusType GroupData::deleteUserID()
+*/
+StatusType GroupData::deleteUserIdPtr()
 {
     if (m_MembersSum <= 0)
         return StatusType::FAILURE;
 
     try
     {
-        UserData **arr = new UserData *[m_MembersSum];
+        auto **arr = new UserData *[m_MembersSum];
         m_GroupUserstree.BuildInOrderArray(arr);
         for (int i = 0; i < m_MembersSum; i++)
         {
-            arr[i]->ResetgroupID();
+            arr[i]->ResetgroupIdPtr();
         }
         delete[] arr;
     }
@@ -105,7 +146,7 @@ StatusType GroupData::deleteUserID()
 void GroupData::getGenreViews(int *temparr)
 {
 
-    UserData **arr = nullptr;
+    UserData **arr;
     if (m_MembersSum <= 0)
         return;
     try
@@ -131,15 +172,10 @@ void GroupData::getGenreViews(int *temparr)
 Genre GroupData::PopularGenre()
 {
     int arr[5] = {0};
-    int n = 0;
-    getGenreViews(arr);
-    for (int i = 0; i < 4; ++i)
-    {
-        if (arr[i] > arr[n])
-        {
-            n = i;
-        }
+    for(int i=0; i<5; i++){
+        arr[i]=m_MembersAloneViews[i]+m_arrViewsSum[i];
     }
+    int n = findMaxIndex(arr,4);
 
     for (int i = 0; i < 4; ++i)
     {
@@ -156,55 +192,28 @@ Genre GroupData::PopularGenre()
 
 }
 
-void GroupData::updatealoneviews(Genre genre){
+void GroupData::updatealoneviews(Genre genre, int i){
 
     switch (genre)
     {
         case Genre::COMEDY:
-             m_arrViewsSum[0]++;
+             m_MembersAloneViews[0]+=i;
             break;
         case Genre::DRAMA:
-            m_arrViewsSum[1]++;
+            m_MembersAloneViews[1]+=i;
             break;
         case Genre::ACTION:
-            m_arrViewsSum[2]++;
+            m_MembersAloneViews[2]+=i;
             break;
         case Genre::FANTASY:
-            m_arrViewsSum[3]++;
+            m_MembersAloneViews[3]+=i;
             break;
         case Genre::NONE:
             break;
 
     }
-    m_arrViewsSum[4]++;
+    m_MembersAloneViews[4]+=i;
 
-}
-
-
-void GroupData::printarr()
-{
-
-    UserData **arr = nullptr;
-    if (m_MembersSum <= 0)
-        return;
-    try
-    {
-        arr = new UserData *[m_MembersSum];
-        m_GroupUserstree.BuildInOrderArray(arr);
-        printf("the size are %d : ", m_MembersSum);
-
-        for (int i = m_MembersSum-1; i >-1 ; i--)
-        {
-
-                printf("the id are %d : ",arr[i]->getUserId());
-
-        }
-        delete[] arr;
-    }
-    catch (const std::bad_alloc &)
-    {
-        return;
-    }
 }
 
 int GroupData::getVIPCounter()const{
@@ -217,4 +226,32 @@ void GroupData::updateVIPCounter()
   if(m_VIPCounter <= 0)
       m_vip= false;
 
+}
+void GroupData::copyGroupArr(int* arr, int* aloneviews) {
+    for (int i = 0; i < 5; i++) {
+        arr[i] = m_arrViewsSum[i];
+        m_MembersAloneViews[i]+=aloneviews[i];
+
+    }
+}
+
+int GroupData:: getNumViewsIndex(int i) const
+{
+    return m_arrViewsSum[i];
+}
+
+
+
+int findMaxIndex(const int* arr, int size) {
+    if (size <= 0) {
+        return -1;
+    }
+    int maxElement =0;
+    for (int i = 1; i < size; i++) {
+        if (arr[i] > arr[maxElement]) {
+            maxElement = i;
+        }
+    }
+
+    return maxElement;
 }
