@@ -52,7 +52,10 @@ public:
 
     void ResetgroupId();
 
-    };
+    void groupwatch(int* arr);
+
+
+ };
 
 
 #endif //AVLNODE_H_USERDATA_H

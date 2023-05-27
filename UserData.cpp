@@ -64,18 +64,21 @@ int UserData:: getNumViewsGroup(int i)
 
 void UserData:: ResetgroupIdPtr() {
     this->m_groupId = 0;
-    this->m_group = nullptr;
+  //  this->m_group = nullptr;
     int arr[5] = {0};
-    m_group->getGenreViews(arr);
+    groupwatch(arr);
+   // m_group->getGenreViews(arr);
     for (int i = 0; i < 5; i++) {
-        m_AllViews[i] += (arr[i] - m_groupViewsBefore[i]); // we update the groups views for user just when we remove the group
+        m_AllViews[i] += arr[i]; // we update the groups views for user just when we remove the group
     }
+    this->m_group = nullptr;
+
 }
 void UserData:: UpdateUserParameters(int i,GroupData* ptr)
 {
     this->m_groupId=i;
     this->m_group=ptr;
-    ptr->copyGroupArr(m_groupViewsBefore,m_AllViews);
+    ptr->copyGroupArr(m_groupViewsBefore);
 }
 
 GroupData* UserData:: getGrouptr() const{
@@ -87,4 +90,12 @@ void UserData:: setGrouptr(GroupData* ptr)
 }
 void UserData::ResetgroupId(){
     m_id=0;
+}
+
+void UserData::groupwatch(int* arr){
+    for(int i=0;i<5;i++){
+        arr[i]=m_group->getNumViewsIndex(i)-m_groupViewsBefore[i];
+        if(arr[i]< 0)
+            arr[i]=0;
+    }
 }

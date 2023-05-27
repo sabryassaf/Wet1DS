@@ -23,6 +23,7 @@ private:
     int m_arrViewsSum[5];
     int m_VIPCounter;
     int m_MembersAloneViews[5];
+    int m_groupWatchBySize[5];
 
 public:
 
@@ -63,7 +64,7 @@ public:
 
     int getVIPCounter()const;
 
-    void copyGroupArr(int* arr, int* aloneviews) ;
+    void copyGroupArr(int* arr) ;
 
     int  getNumViewsIndex(int i) const;
 

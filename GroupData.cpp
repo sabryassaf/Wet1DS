@@ -4,7 +4,7 @@
 
 #include "GroupData.h"
 
-GroupData::GroupData(int Id) : m_id(Id), m_vip(false), m_MembersSum(0), m_GroupUserstree() ,m_arrViewsSum{}, m_VIPCounter(0),m_MembersAloneViews{}
+GroupData::GroupData(int Id) : m_id(Id), m_vip(false), m_MembersSum(0), m_GroupUserstree() ,m_arrViewsSum{}, m_VIPCounter(0),m_MembersAloneViews{},m_groupWatchBySize{}
 {}
 
 GroupData::~GroupData()=default;
@@ -36,7 +36,7 @@ StatusType GroupData::add_user(int userkey, UserData *userdata)
 
         }
         for(int i=0;i<5;i++){
-            m_MembersAloneViews[i]+=userdata->getNumViewsGroup(i)+ userdata->getNumViewsAlone(i);
+            m_MembersAloneViews[i]+=userdata->getNumViewsAlone(i);
         }
         m_MembersSum++;
         return StatusType::SUCCESS;
@@ -55,6 +55,8 @@ RankTree<int, UserData *> &GroupData::getGroupUsers()
 StatusType GroupData::remove_user(int key, bool Status,UserData* userdata)
 {
     m_MembersSum--;
+    int added[5]={0};
+    userdata->groupwatch(added);
     if (Status) {
         m_VIPCounter--;
         if(m_VIPCounter <= 0)
@@ -64,6 +66,12 @@ StatusType GroupData::remove_user(int key, bool Status,UserData* userdata)
     for(int i=0;i<5;i++){
 
         m_MembersAloneViews[i]-= userdata->getNumViewsAlone(i);
+        m_groupWatchBySize[i]-=added[i];
+        if(m_groupWatchBySize[i] < 0)
+            m_groupWatchBySize[i]=0;
+        if(m_MembersAloneViews[i]<0)
+            m_MembersAloneViews[i]=0;
+
     }
     return m_GroupUserstree.Remove(key);
 }
@@ -75,21 +83,26 @@ void GroupData::updateTogtherViews(MovieData *movie){
     {
         case Genre::COMEDY:
             m_arrViewsSum[0]++;
+            m_groupWatchBySize[0]+=m_MembersSum;
             break;
         case Genre::DRAMA:
             m_arrViewsSum[1]++;
+            m_groupWatchBySize[1]+=m_MembersSum;
             break;
         case Genre::ACTION:
             m_arrViewsSum[2]++;
+            m_groupWatchBySize[2]+=m_MembersSum;
             break;
         case Genre::FANTASY:
             m_arrViewsSum[3]++;
+            m_groupWatchBySize[3]+=m_MembersSum;
             break;
         case Genre::NONE:
             break;
 
     }
     m_arrViewsSum[4]++;
+    m_groupWatchBySize[4]+=m_MembersSum;
     movie->UpdateMovieViewer(m_MembersSum);
 
 }
@@ -173,7 +186,7 @@ Genre GroupData::PopularGenre()
 {
     int arr[5] = {0};
     for(int i=0; i<5; i++){
-        arr[i]=m_MembersAloneViews[i]+m_arrViewsSum[i];
+        arr[i]=m_MembersAloneViews[i]+m_groupWatchBySize[i];
     }
     int n = findMaxIndex(arr,4);
 
@@ -227,10 +240,9 @@ void GroupData::updateVIPCounter()
       m_vip= false;
 
 }
-void GroupData::copyGroupArr(int* arr, int* aloneviews) {
+void GroupData::copyGroupArr(int* arr) {
     for (int i = 0; i < 5; i++) {
         arr[i] = m_arrViewsSum[i];
-        m_MembersAloneViews[i]+=aloneviews[i];
 
     }
 }
