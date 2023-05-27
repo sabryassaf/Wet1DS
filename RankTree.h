@@ -36,10 +36,6 @@ private:
 
     AVLNode<Key, Data> *DeleteNode(const Key &key, AVLNode<Key, Data> *node);
 
-    int BalanceFactor(AVLNode<Key, Data> *node);
-
-    void UpdateHeight(AVLNode<Key, Data> *node);
-
     AVLNode<Key, Data> *FindNode(const Key &key, AVLNode<Key, Data> *node);
 
     void BuildInOrderArrayAux(AVLNode<Key, Data> *node, Data *InOrderArray, int *index);
@@ -102,12 +98,6 @@ template<class Key, class Data>
 AVLNode<Key, Data> *RankTree<Key, Data>::getMax() const
 {
     return this->m_max;
-}
-
-template<class Key, class Data>
-int RankTree<Key, Data>::BalanceFactor(AVLNode<Key, Data> *node)
-{
-    return (node->getLeftChild()->getHeight() - node->getRightChild()->getHeight());
 }
 
 template<class Key, class Data>
