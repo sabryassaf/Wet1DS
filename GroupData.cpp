@@ -49,7 +49,7 @@ StatusType GroupData::add_user(int userkey, UserData *userdata)
 StatusType GroupData::remove_user(int key, bool Status,UserData* userdata)
 {
     m_MembersSum--;
-    int added[5]={0};
+    int added[GENRE_NUMBERS]={0};
     userdata->groupwatch(added);
     if (Status) {
         m_VIPCounter--;
@@ -57,7 +57,7 @@ StatusType GroupData::remove_user(int key, bool Status,UserData* userdata)
             m_vip= false;
     }
 
-    for(int i=0;i<5;i++){
+    for(int i=0;i<GENRE_NUMBERS;i++){
 
         m_MembersAloneViews[i]-= userdata->getNumViewsAlone(i);
         m_groupWatchBySize[i]-=added[i];
@@ -126,8 +126,8 @@ StatusType GroupData::deleteUserIdPtr()
 
 Genre GroupData::PopularGenre()
 {
-    int arr[5] = {0};
-    for(int i=0; i<5; i++){
+    int arr[GENRE_NUMBERS] = {0};
+    for(int i=0; i<GENRE_NUMBERS; i++){
         arr[i]=m_MembersAloneViews[i]+m_groupWatchBySize[i];
     }
     int n = findMaxIndex(arr,4);
@@ -172,7 +172,7 @@ void GroupData::updatealoneviews(Genre genre, int i){
 }
 
 void GroupData::copyGroupArr(int* arr) {
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < GENRE_NUMBERS; i++) {
         arr[i] = m_arrViewsSum[i];
 
     }

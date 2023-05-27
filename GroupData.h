@@ -9,6 +9,7 @@
 #include "UserData.h"
 #include "MovieData.h"
 #include "RankTree.h"
+#define GENRE_NUMBERS 5
 
 class UserData;
 
@@ -20,10 +21,10 @@ private:
     bool m_vip;
     int m_MembersSum;
     RankTree<int, UserData *> m_GroupUserstree;
-    int m_arrViewsSum[5];
+    int m_arrViewsSum[GENRE_NUMBERS];
     int m_VIPCounter;
-    int m_MembersAloneViews[5];
-    int m_groupWatchBySize[5];
+    int m_MembersAloneViews[GENRE_NUMBERS];
+    int m_groupWatchBySize[GENRE_NUMBERS];
 
 public:
 
