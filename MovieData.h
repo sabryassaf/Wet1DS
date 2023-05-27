@@ -8,20 +8,7 @@
 
 //#include "wet1util.h"
 #include "RankTree.h"
-/*
-class DATA_Type_Exceptions : public std::exception
-{
-    std::string m_message;
-public:
-    explicit DATA_Type_Exceptions(const std::string &message) : m_message(message)
-    {}
 
-    const std::string &what()
-    {
-        return m_message;
-    }
-};
-*/
 class MovieData {
 private:
     int m_id;
@@ -43,7 +30,6 @@ public:
     Genre getMovieGenre() const;
     int getId() const;
     bool getMovieStatus() const;
-    void UpdateMovieRaters();
 };
 
 #endif //AVLNODE_H_MOVIEDATA_H

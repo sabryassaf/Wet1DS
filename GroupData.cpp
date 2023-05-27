@@ -46,12 +46,6 @@ StatusType GroupData::add_user(int userkey, UserData *userdata)
 }
 
 
-RankTree<int, UserData *> &GroupData::getGroupUsers()
-{
-    return m_GroupUserstree;
-}
-
-
 StatusType GroupData::remove_user(int key, bool Status,UserData* userdata)
 {
     m_MembersSum--;
@@ -107,33 +101,6 @@ void GroupData::updateTogtherViews(MovieData *movie){
 
 }
 
-
-/*
-
-void GroupData::updateTogtherViews(MovieData *movie)
-{
-    if (m_MembersSum <= 0)
-        return;
-    try
-    {
-        auto **arr = new UserData *[m_MembersSum];
-
-        m_GroupUserstree.BuildInOrderArray(arr);
-        for (int i = 0; i < m_MembersSum; i++)
-        {
-            arr[i]->updateGroupViews(movie->getMovieGenre());
-        //    printf("**********the users are %d\n ",arr[i]->getUserId());
-        }
-        movie->UpdateMovieViewer(m_MembersSum);
-        delete[] arr;
-    }
-    catch (const std::bad_alloc &)
-    {
-        return;
-    }
-
-}
-*/
 StatusType GroupData::deleteUserIdPtr()
 {
     if (m_MembersSum <= 0)
@@ -154,31 +121,6 @@ StatusType GroupData::deleteUserIdPtr()
         return StatusType::ALLOCATION_ERROR;
     }
     return StatusType::SUCCESS;
-}
-
-void GroupData::getGenreViews(int *temparr)
-{
-
-    UserData **arr;
-    if (m_MembersSum <= 0)
-        return;
-    try
-    {
-        arr = new UserData *[m_MembersSum];
-        m_GroupUserstree.BuildInOrderArray(arr);
-        for (int i = 0; i < m_MembersSum; i++)
-        {
-            for (int j = 0; j < 5; j++)
-            {
-                temparr[j] += arr[i]->getNumViewsAlone(j) + arr[i]->getNumViewsGroup(j);
-            }
-        }
-        delete[] arr;
-    }
-    catch (const std::bad_alloc &)
-    {
-        return;
-    }
 }
 
 
@@ -229,17 +171,6 @@ void GroupData::updatealoneviews(Genre genre, int i){
 
 }
 
-int GroupData::getVIPCounter()const{
-    return m_VIPCounter;
-}
-
-void GroupData::updateVIPCounter()
-{
-  m_VIPCounter--;
-  if(m_VIPCounter <= 0)
-      m_vip= false;
-
-}
 void GroupData::copyGroupArr(int* arr) {
     for (int i = 0; i < 5; i++) {
         arr[i] = m_arrViewsSum[i];

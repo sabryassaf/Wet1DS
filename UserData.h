@@ -13,11 +13,9 @@ class GroupData;
 class UserData {
 private:
     int m_id;
-    int m_aloneViews[5];
     int m_groupViewsBefore[5];
     int m_AllViews[5];
     bool m_vip;
-    bool m_groupMem;
     int m_groupId;
     GroupData* m_group;
 
@@ -32,11 +30,9 @@ public:
 
     int getGroupId() const;
 
-    int getUserId() const;
 
     void updateAloneViews(Genre genre);
 
-    void updateGroupViews(Genre genre);
 
     int getNumViewsAlone(int i) const;
 
@@ -47,10 +43,6 @@ public:
     void UpdateUserParameters(int i,GroupData* ptr);
 
     GroupData* getGrouptr() const;
-
-    void setGrouptr(GroupData* ptr);
-
-    void ResetgroupId();
 
     void groupwatch(int* arr);
 

@@ -27,7 +27,7 @@ private:
 
 public:
 
-    GroupData();
+    GroupData()=default;
 
     GroupData(int Id);
 
@@ -43,7 +43,6 @@ public:
     StatusType add_user(int userkey, UserData *userdata);
 
 
-    RankTree<int, UserData *> &getGroupUsers();
 
     StatusType remove_user(int key,bool Status,UserData* userdata);
 
@@ -51,7 +50,6 @@ public:
     void updateTogtherViews(MovieData *movie);
 
 
-    void getGenreViews(int *temparr);
 
     Genre PopularGenre();
 
@@ -59,10 +57,6 @@ public:
 
     void updatealoneviews(Genre genre,int i);
 
-
-    void updateVIPCounter();
-
-    int getVIPCounter()const;
 
     void copyGroupArr(int* arr) ;
 

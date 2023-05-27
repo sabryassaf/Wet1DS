@@ -4,7 +4,7 @@
 
 #include "MovieData.h"
 
-MovieData::MovieData(){}
+MovieData::MovieData()=default;
 
 MovieData::MovieData(int MovieId, Genre genre, int Views, bool VipStatus) : m_id(MovieId), m_rating(0), m_movieGenre(genre),
                                                                  m_views(Views), m_vipStatus(VipStatus),m_raters(0)
@@ -40,10 +40,7 @@ double MovieData::getMovieRating() const
 {
     return m_rating;
 }
-void MovieData::UpdateMovieRaters()  // no need
-{
-     this->m_raters+=1;
-}
+
 int MovieData::getMovieViews() const
 {
     return m_views;

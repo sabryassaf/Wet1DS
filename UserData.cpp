@@ -5,9 +5,9 @@
 #include "UserData.h"
 
 
-UserData:: UserData(){}
+UserData:: UserData()=default;
 
-UserData:: UserData(int Id, bool Status) : m_id(Id), m_aloneViews{},m_groupViewsBefore{},m_AllViews{},m_vip(Status), m_groupMem(false), m_groupId(0),m_group(nullptr)
+UserData:: UserData(int Id, bool Status) : m_id(Id),m_groupViewsBefore{},m_AllViews{},m_vip(Status),m_groupId(0),m_group(nullptr)
 {}
 
 UserData:: ~UserData()  = default;
@@ -21,10 +21,7 @@ int UserData::  getGroupId() const
 {
     return m_groupId;
 }
-int UserData::  getUserId() const
-{
-    return m_id;
-}
+
 
 void UserData::  updateAloneViews(Genre genre)
 {
@@ -83,13 +80,6 @@ void UserData:: UpdateUserParameters(int i,GroupData* ptr)
 
 GroupData* UserData:: getGrouptr() const{
     return m_group;
-}
-void UserData:: setGrouptr(GroupData* ptr)
-{
-    m_group=ptr;
-}
-void UserData::ResetgroupId(){
-    m_id=0;
 }
 
 void UserData::groupwatch(int* arr){
