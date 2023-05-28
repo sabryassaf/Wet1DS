@@ -14,13 +14,13 @@ class RankTree
 {
 private:
 
-    int size;
-    AVLNode<Key, Data> *root;
+    int m_size;
+    AVLNode<Key, Data> *m_root;
     AVLNode<Key, Data> *m_max;
 
-    AVLNode<Key, Data> *RotateRight(AVLNode<Key, Data> *node);
+    AVLNode<Key, Data> *rightRotate(AVLNode<Key, Data> *node);
 
-    AVLNode<Key, Data> *RotateLeft(AVLNode<Key, Data> *node);
+    AVLNode<Key, Data> *leftRotate(AVLNode<Key, Data> *node);
 
     AVLNode<Key, Data> *RollingRR(AVLNode<Key, Data> *node);
 
@@ -32,20 +32,21 @@ private:
 
     AVLNode<Key, Data> *MakeBalance(AVLNode<Key, Data> *node);
 
-    AVLNode<Key, Data> *InsertNode(Key &key, Data &data, AVLNode<Key, Data> *node);
+    AVLNode<Key, Data> *InsertNodeAux(Key &key, Data &data, AVLNode<Key, Data> *node);
 
-    AVLNode<Key, Data> *DeleteNode(const Key &key, AVLNode<Key, Data> *node);
+    AVLNode<Key, Data> *DeleteNodeAux(const Key &key, AVLNode<Key, Data> *node);
 
-    AVLNode<Key, Data> *FindNode(const Key &key, AVLNode<Key, Data> *node);
+    AVLNode<Key, Data> *FindNodeAux(const Key &key, AVLNode<Key, Data> *node);
 
     void BuildInOrderArrayAux(AVLNode<Key, Data> *node, Data *InOrderArray, int *index);
 
 public:
+
     void FreeData(AVLNode<Key, Data> *node);
 
     void DeleteTree(AVLNode<Key, Data> *node);
 
-    RankTree() : size(0), root(nullptr), m_max(nullptr)
+    RankTree() : m_size(0), m_root(nullptr), m_max(nullptr)
     {}
 
     RankTree(const RankTree &other) = delete;
@@ -54,7 +55,7 @@ public:
 
     virtual ~RankTree()
     {
-        DeleteTree(root);
+        DeleteTree(m_root);
     }
 
     int getSize() const;
@@ -69,8 +70,6 @@ public:
 
     AVLNode<Key, Data> *getMax() const;
 
-    void setRoot(AVLNode<Key, Data> *newRoot);
-
     void BuildInOrderArray(Data *InOrderArray);
 
     bool EmptyTree() const;
@@ -80,17 +79,13 @@ public:
 };
 ////////////////////// Implementations for private//////////////
 
-template<class Key, class Data>
-void RankTree<Key, Data>::setRoot(AVLNode<Key, Data> *newRoot)
-{
-    this->root = newRoot;
-}
+
 
 template<class Key, class Data>
 
 AVLNode<Key, Data> *RankTree<Key, Data>::getRoot() const
 {
-    return this->root;
+    return this->m_root;
 }
 
 template<class Key, class Data>
@@ -101,213 +96,206 @@ AVLNode<Key, Data> *RankTree<Key, Data>::getMax() const
 }
 
 template<class Key, class Data>
-AVLNode<Key, Data> *RankTree<Key, Data>::RotateRight(AVLNode<Key, Data> *node)
+AVLNode<Key, Data> *RankTree<Key, Data>::rightRotate(AVLNode<Key, Data> *node)
 {
-    AVLNode<Key, Data> *newnode = node->getLeftChild();
-    node->setLeftChild(newnode->getRightChild());
+    AVLNode<Key, Data> *RotateNode = node->getLeftChild();
+    node->setLeftChild(RotateNode->getRightChild());
 
-    if (node->getParent() != nullptr)
+    if (node->getParent())
     {
         if (node->getParent()->getLeftChild() == node)
         {
-            node->getParent()->setLeftChild(newnode);
+            node->getParent()->setLeftChild(RotateNode);
         } else
         {
-            node->getParent()->setRightChild(newnode);
+            node->getParent()->setRightChild(RotateNode);
         }
     }
-    newnode->setParent(node->getParent());
-    newnode->setRightChild(node);
-    if (this->root == node)
+    RotateNode->setParent(node->getParent());
+    RotateNode->setRightChild(node);
+    if (this->m_root == node)
     {
-        this->root = newnode;
+        this->m_root = RotateNode;
     }
     node->updateParameters();
-    newnode->updateParameters();
-    return newnode;
+    RotateNode->updateParameters();
+    return RotateNode;
 
 }
 
 template<class Key, class Data>
-AVLNode<Key, Data> *RankTree<Key, Data>::RotateLeft(AVLNode<Key, Data> *node)
+AVLNode<Key, Data> *RankTree<Key, Data>::leftRotate(AVLNode<Key, Data> *node)
 {
-    AVLNode<Key, Data> *newnode = node->getRightChild();
-    node->setRightChild(newnode->getLeftChild());
+    AVLNode<Key, Data> *RotateNode = node->getRightChild();
+    node->setRightChild(RotateNode->getLeftChild());
 
-    if (node->getParent() != nullptr)
+    if (node->getParent())
     {
         if (node->getParent()->getLeftChild() == node)
         {
-            node->getParent()->setLeftChild(newnode);
+            node->getParent()->setLeftChild(RotateNode);
         } else
         {
-            node->getParent()->setRightChild(newnode);
+            node->getParent()->setRightChild(RotateNode);
         }
     }
-    newnode->setParent(node->getParent());
-    newnode->setLeftChild(node);
-    if (this->root == node)
+    RotateNode->setParent(node->getParent());
+    RotateNode->setLeftChild(node);
+    if (this->m_root == node)
     {
-        this->root = newnode;
+        this->m_root = RotateNode;
     }
     node->updateParameters();
-    newnode->updateParameters();
-    return newnode;
+    RotateNode->updateParameters();
+    return RotateNode;
 }
 
 template<class Key, class Data>
 AVLNode<Key, Data> *RankTree<Key, Data>::RollingLL(AVLNode<Key, Data> *node)
 {
-    return RotateRight(node);
+    return rightRotate(node);
 }
 
 template<class Key, class Data>
 AVLNode<Key, Data> *RankTree<Key, Data>::RollingRR(AVLNode<Key, Data> *node)
 {
-    return RotateLeft(node);
+    return leftRotate(node);
 }
 
 template<class Key, class Data>
 AVLNode<Key, Data> *RankTree<Key, Data>::RollingRL(AVLNode<Key, Data> *node)
 {
-    AVLNode<Key, Data> *newnode = node->getRightChild();
-    node->setRightChild(RollingLL(newnode));
+    AVLNode<Key, Data> *RotateNode = node->getRightChild();
+    node->setRightChild(RollingLL(RotateNode));
     return RollingRR(node);
 }
 
 template<class Key, class Data>
 AVLNode<Key, Data> *RankTree<Key, Data>::RollingLR(AVLNode<Key, Data> *node)
 {
-    AVLNode<Key, Data> *newnode = node->getLeftChild();
-    node->setLeftChild(RollingRR(newnode));
+    AVLNode<Key, Data> *RotateNode = node->getLeftChild();
+    node->setLeftChild(RollingRR(RotateNode));
     return RollingLL(node);
 }
 
 template<class Key, class Data>
 AVLNode<Key, Data> *RankTree<Key, Data>::MakeBalance(AVLNode<Key, Data> *node)
 {
-    int BF = node->getBalanceFactor();
-    if (BF > 1)
-    {
-        if (node->getLeftChild()->getBalanceFactor() >= 0)
-        {
-            return RollingLL(node);
-        } else
-        {
-            return RollingLR(node);
-        }
-    } else if (BF < -1)
+
+     if (node->getBalanceFactor() < -1)
     {
         if (node->getRightChild()->getBalanceFactor() > 0)
-        {
             return RollingRL(node);
-        } else
-        {
-            return RollingRR(node);
-        }
+        return RollingRR(node);
+
     }
+
+     if (node->getBalanceFactor() > 1)
+     {
+         if (node->getLeftChild()->getBalanceFactor() < 0)
+             return RollingLR(node);
+         return RollingLL(node);
+     }
     return node;
 }
 
 template<class Key, class Data>
-AVLNode<Key, Data> *RankTree<Key, Data>::InsertNode(Key &key, Data &data, AVLNode<Key, Data> *node)
+AVLNode<Key, Data> *RankTree<Key, Data>::InsertNodeAux(Key &key, Data &data, AVLNode<Key, Data> *node)
 {
-    if (node == nullptr)
-    {
-        AVLNode<Key, Data> *newElement = new AVLNode<Key, Data>(key, data);
-        if (newElement == nullptr)
-        {
-            return nullptr;
-        }
-        newElement->setHeight(0);
-        if (root == nullptr)
-        {
-            root = newElement;
+    if (node)
 
-            m_max = newElement;
-        }
-
-        return newElement;
-    } else
     {
         if (key > node->getKey())
         {
-            AVLNode<Key, Data> *newNode = InsertNode(key, data, node->getRightChild());
+            AVLNode<Key, Data> *newNode = InsertNodeAux(key, data, node->getRightChild());
             node->setRightChild(newNode);
-        } else if (key < node->getKey())
+        }
+        else if (key < node->getKey())
         {
-            AVLNode<Key, Data> *newNode = InsertNode(key, data, node->getLeftChild());
+            AVLNode<Key, Data> *newNode = InsertNodeAux(key, data, node->getLeftChild());
             node->setLeftChild(newNode);
         }
     }
-    node->updateParameters();
-    AVLNode<Key, Data> *balancedNode = MakeBalance(node);
-    if (node == this->root)
+
+    else
     {
-        this->root = balancedNode;
+        auto *newNode = new AVLNode<Key, Data>(key, data);
+        if (!newNode )
+            return nullptr;
+
+        newNode->setHeight(0);
+        if (!m_root)
+        {
+            m_root = newNode;
+            m_max = newNode;
+        }
+
+        return newNode;
     }
-    return balancedNode;
+
+    node->updateParameters();
+    AVLNode<Key, Data> *balance = MakeBalance(node);
+    if (node == this->m_root)
+    {
+        this->m_root = balance;
+    }
+    return balance;
 }
 
 
 //
 template<class Key, class Data>
-AVLNode<Key, Data> *RankTree<Key, Data>::DeleteNode(const Key &key, AVLNode<Key, Data> *node)
+AVLNode<Key, Data> *RankTree<Key, Data>::DeleteNodeAux(const Key &key, AVLNode<Key, Data> *node)
 {
-    if (node == nullptr)
-    {
+    if (!node)
         return nullptr;
-    }
+
     if (node->getKey() == key)
     {
         AVLNode<Key, Data> *tempNode;
-        if ((node->getLeftChild()) && (node->getRightChild())) // two SONS
-        {
-            tempNode = node->getRightChild();
-            while (tempNode->getLeftChild())
-            {
-                tempNode = tempNode->getLeftChild();
+        if ((node->getLeftChild() == nullptr) && (node->getRightChild() == nullptr)) {
+            if (m_root == node) {
+                m_root = nullptr;
             }
-            tempNode->swap(node);
-            node->setRightChild(DeleteNode(key, node->getRightChild()));
-        } else if (((node->getLeftChild() == nullptr) && node->getRightChild()) ||
+            delete node;
+            return nullptr;
+        }
+        else if (((node->getLeftChild() == nullptr) && node->getRightChild()) ||
                    ((node->getRightChild() == nullptr) && node->getLeftChild())) //ONE CHILD ONLY
         {
-            if (node->getLeftChild())
-            {
+            if (node->getLeftChild()) {
                 tempNode = node->getLeftChild();
-            } else
-            {
+            } else {
                 tempNode = node->getRightChild();
             }
 
-            if (root == node)
-            {
-                root = tempNode;
-                root->setParent(nullptr);
-//                m_max = root;
-            } else
-            {
+            if (m_root == node) {
+                m_root = tempNode;
+                m_root->setParent(nullptr);
+            } else{
                 tempNode->setParent(node->getParent());
             }
 
             delete node;
             node = tempNode;
-        } else //no sons
-        {
-            if (root == node)
-            {
-                root = nullptr;
-            }
-            delete node;
-            return nullptr;
         }
-    } else if (node->getKey() < key)
+        else {
+            tempNode = node->getRightChild();
+            while (tempNode->getLeftChild()) {
+                tempNode = tempNode->getLeftChild();
+            }
+            tempNode->swap(node);
+            node->setRightChild(DeleteNodeAux(key, node->getRightChild()));
+        }
+    }
+    else if (node->getKey() < key)
     {
-        node->setRightChild(DeleteNode(key, node->getRightChild()));
-    } else if (node->getKey() > key)
+        node->setRightChild(DeleteNodeAux(key, node->getRightChild()));
+    }
+
+    else if (node->getKey() > key)
     {
-        node->setLeftChild(DeleteNode(key, node->getLeftChild()));
+        node->setLeftChild(DeleteNodeAux(key, node->getLeftChild()));
     }
 
     node->updateParameters();
@@ -316,39 +304,45 @@ AVLNode<Key, Data> *RankTree<Key, Data>::DeleteNode(const Key &key, AVLNode<Key,
 }
 
 template<class Key, class Data>
-AVLNode<Key, Data> *RankTree<Key, Data>::FindNode(const Key &key, AVLNode<Key, Data> *node)
+AVLNode<Key, Data> *RankTree<Key, Data>::FindNodeAux(const Key &key, AVLNode<Key, Data> *node)
 {
-    if (node == nullptr)
-    {
+    if (!node)
         return nullptr;
-    }
+
 
     if (key == node->getKey())
-    {
         return node;
-    }
+
 
     if (key > node->getKey())
-    {
-        return FindNode(key, node->getRightChild());
-    }
+        return FindNodeAux(key, node->getRightChild());
+
 
     if (key < node->getKey())
-    {
-        return FindNode(key, node->getLeftChild());
-    }
+        return FindNodeAux(key, node->getLeftChild());
+
 
     return nullptr;
+}
+
+template<class Key, class Data>
+void RankTree<Key, Data>::BuildInOrderArrayAux(AVLNode<Key, Data> *node, Data *InOrderArray, int *index)
+{
+    if (!node)
+        return;
+
+    BuildInOrderArrayAux(node->getRightChild(), InOrderArray, index);
+    InOrderArray[(*index)++] = node->getData();
+    BuildInOrderArrayAux(node->getLeftChild(), InOrderArray, index);
 }
 ////////////////////// Implementations for public//////////////
 
 template<class Key, class Data>
 void RankTree<Key, Data>::DeleteTree(AVLNode<Key, Data> *node)
 {
-    if (node == nullptr)
-    {
+    if (!node)
         return;
-    }
+
 
     DeleteTree(node->getRightChild());
     DeleteTree(node->getLeftChild());
@@ -358,10 +352,9 @@ void RankTree<Key, Data>::DeleteTree(AVLNode<Key, Data> *node)
 template<class Key, class Data>
 void RankTree<Key, Data>::FreeData(AVLNode<Key, Data> *node)
 {
-    if (node == nullptr)
-    {
+    if (!node )
         return;
-    }
+
     FreeData(node->getRightChild());
     FreeData(node->getLeftChild());
     delete node->getData();
@@ -370,18 +363,16 @@ void RankTree<Key, Data>::FreeData(AVLNode<Key, Data> *node)
 template<class Key, class Data>
 StatusType RankTree<Key, Data>::Insert(Key &key, Data &data)
 {
-    if (this->FindNode(key, root))
-    {
+    if (this->FindNodeAux(key, m_root))
         return StatusType::FAILURE;
-    }
 
-    root = InsertNode(key, data, root);
-    if (root == nullptr)
-    {
+
+    m_root = InsertNodeAux(key, data, m_root);
+    if (!m_root)
         return StatusType::ALLOCATION_ERROR;
-    }
+
     this->setNewMax();
-    size++;
+    m_size++;
     return StatusType::SUCCESS;
 }
 
@@ -389,29 +380,25 @@ template<class Key, class Data>
 StatusType RankTree<Key, Data>::Remove(const Key &key)
 {
 
-    if (FindNode(key, root) == nullptr)
-    {
+    if (!FindNodeAux(key, m_root))
         return StatusType::FAILURE;
-    }
+
     m_max = nullptr;
-
-    root = DeleteNode(key, root);
-
+    m_root = DeleteNodeAux(key, m_root);
     this->setNewMax();
-
-    size--;
+    m_size--;
     return StatusType::SUCCESS;
 }
 
 template<class Key, class Data>
 void RankTree<Key, Data>::setNewMax()
 {
-    if (root == nullptr)
+    if (!m_root)
     {
         m_max = nullptr;
         return;
     }
-    AVLNode<Key, Data> *tmp = root;
+    AVLNode<Key, Data> *tmp = m_root;
     while (tmp->getRightChild() != nullptr)
     {
         tmp = tmp->getRightChild();
@@ -422,11 +409,10 @@ void RankTree<Key, Data>::setNewMax()
 template<class Key, class Data>
 Data RankTree<Key, Data>::Find(const Key &key)
 {
-    AVLNode<Key, Data> *tmp = FindNode(key, root);
-    if (tmp == nullptr)
-    {
+    AVLNode<Key, Data> *tmp = FindNodeAux(key, m_root);
+    if (!tmp)
         return nullptr;
-    }
+
     return tmp->getData();
 }
 
@@ -434,32 +420,21 @@ Data RankTree<Key, Data>::Find(const Key &key)
 template<class Key, class Data>
 int RankTree<Key, Data>::getSize() const
 {
-    return size;
+    return m_size;
 }
 
-template<class Key, class Data>
-void RankTree<Key, Data>::BuildInOrderArrayAux(AVLNode<Key, Data> *node, Data *InOrderArray, int *index)
-{
-    if (node == nullptr)
-    {
-        return;
-    }
-    BuildInOrderArrayAux(node->getRightChild(), InOrderArray, index);
-    InOrderArray[(*index)++] = node->getData();
-    BuildInOrderArrayAux(node->getLeftChild(), InOrderArray, index);
-}
 
 template<class Key, class Data>
 void RankTree<Key, Data>::BuildInOrderArray(Data *InOrderArray)
 {
     int index = 0;
-    BuildInOrderArrayAux(root, InOrderArray, &index);
+    BuildInOrderArrayAux(m_root, InOrderArray, &index);
 }
 
 template<class Key, class Data>
 bool RankTree<Key, Data>::EmptyTree() const
 {
-    return size <= 0;
+    return m_size <= 0;
 }
 
 #endif //STREAMINGDBA1_CPP_RankTree_H

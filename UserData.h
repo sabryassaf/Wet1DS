@@ -7,14 +7,14 @@
 #include "wet1util.h"
 #include "MovieData.h"
 #include "GroupData.h"
-#define GENRE_NUMBERS 5
+#define  GENRENUM 5
 class GroupData;
 
 class UserData {
 private:
     int m_id;
-    int m_groupViewsBefore[GENRE_NUMBERS];
-    int m_AllViews[GENRE_NUMBERS];
+    int m_groupViewsBefore[GENRENUM];
+    int m_AllViews[GENRENUM];
     bool m_vip;
     int m_groupId;
     GroupData* m_group;

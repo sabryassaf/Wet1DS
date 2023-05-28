@@ -9,7 +9,12 @@
 #include "UserData.h"
 #include "MovieData.h"
 #include "RankTree.h"
-#define GENRE_NUMBERS 5
+#define GENRENUM 5
+#define NONEINDEX 4
+#define FANTASYINDEX 3
+#define ACTIONINDEX 2
+#define DRAMAINDEX 1
+#define COMEDYINDEX 0
 
 class UserData;
 
@@ -21,10 +26,10 @@ private:
     bool m_vip;
     int m_MembersSum;
     RankTree<int, UserData *> m_GroupUserstree;
-    int m_arrViewsSum[GENRE_NUMBERS];
+    int m_arrViewsSum[GENRENUM];
     int m_VIPCounter;
-    int m_MembersAloneViews[GENRE_NUMBERS];
-    int m_groupWatchBySize[GENRE_NUMBERS];
+    int m_MembersAloneViews[GENRENUM];
+    int m_groupWatchBySize[GENRENUM];
 
 public:
 

@@ -15,13 +15,13 @@
 #ifndef STREAMINGDBA1_H_
 #define STREAMINGDBA1_H_
 
-//#include "RankTree.h"
-//#include "MovieData.h"
+
 #include "UserData.h"
 #include "GroupData.h"
 #include "MoviesRankingKey.h"
 #include "MovieData.h"
 #include "UserData.h"
+#define MAXRATING 100
 
 class streaming_database
 {

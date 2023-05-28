@@ -19,17 +19,16 @@ enum struct NodeType
 template<class Key, class Data>
 class AVLNode
 {
-    Data m_data;
     Key m_key;
+    Data m_data;
+    AVLNode *m_leftChild;
+    AVLNode *m_rightChild;
+    AVLNode *m_parent;
+    int m_balanceFactor;
+    int m_height;
     NodeType m_type;
 
 
-    AVLNode *m_parent;
-    AVLNode *m_rightChild;
-    AVLNode *m_leftChild;
-
-    int m_height;
-    int m_balanceFactor;
 
 public:
     AVLNode(Key key, Data data);
@@ -44,11 +43,9 @@ public:
 
     void setParent(AVLNode *node);
 
-    void setData(Data &data);
 
     void setHeight(int i);
 
-    void setKey(Key key);
 
     int getBalanceFactor() const;
 
@@ -80,10 +77,10 @@ template<class Key, class Data>
 void AVLNode<Key, Data>::swap(AVLNode *node)
 {
     Key tempKey = this->m_key;
-    Data tempVal = this->m_data;
     this->m_key = node->m_key;
-    this->m_data = node->m_data;
     node->m_key = tempKey;
+    Data tempVal = this->m_data;
+    this->m_data = node->m_data;
     node->m_data = tempVal;
 }
 
@@ -108,18 +105,6 @@ template<class Key, class Data>
 void AVLNode<Key, Data>::setHeight(int i)
 {
     this->m_height = i;
-}
-
-template<class Key, class Data>
-void AVLNode<Key, Data>::setKey(Key key)
-{
-    this->m_key = key;
-}
-
-template<class Key, class Data>
-void AVLNode<Key, Data>::setData(Data &data)
-{
-    this->m_data = data;
 }
 
 template<class Key, class Data>
@@ -183,24 +168,13 @@ Data AVLNode<Key, Data>::getData() const
 }
 
 template<class Key, class Data>
-AVLNode<Key, Data>::AVLNode(Key key, Data data)
+AVLNode<Key, Data>::AVLNode(Key key, Data data) :m_key(key),m_data(data),m_leftChild(nullptr),m_rightChild(nullptr),m_parent(
+        nullptr),m_balanceFactor(0),m_height(0),m_type(NodeType::LEAF)
 {
-/*check if key or data is valid*/
-    this->m_key = key;
-    this->m_data = data;
-    this->m_leftChild = nullptr;
-    this->m_rightChild = nullptr;
-    this->m_parent = nullptr;
-    this->m_balanceFactor = 0;
-    this->m_height = 0;
-    this->m_type = NodeType::LEAF;
-
 }
 
 template<class Key, class Data>
-AVLNode<Key, Data>::~AVLNode()
-{
-}
+AVLNode<Key, Data>::~AVLNode()=default;
 
 template<class Key, class Data>
 void AVLNode<Key, Data>::updateParameters()
@@ -264,7 +238,7 @@ void AVLNode<Key, Data>::setRightChild(AVLNode *node)
         return;
     }
     this->m_rightChild = node;
-    if (node != nullptr)
+    if (node)
     {
         node->setParent(this);
     }
@@ -281,7 +255,7 @@ void AVLNode<Key, Data>::setLeftChild(AVLNode *node)
         return;
     }
     this->m_leftChild = node;
-    if (node != nullptr)
+    if (node)
     {
         node->setParent(this);
     }

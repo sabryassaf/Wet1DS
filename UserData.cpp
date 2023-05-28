@@ -3,12 +3,11 @@
 //
 
 #include "UserData.h"
-#define DEFAULT_GROUP_ID 0
-#define GENRE_NUMBERS 5
+
 
 UserData:: UserData()=default;
 
-UserData:: UserData(int Id, bool Status) : m_id(Id),m_groupViewsBefore{},m_AllViews{},m_vip(Status),m_groupId(DEFAULT_GROUP_ID),m_group(nullptr)
+UserData:: UserData(int Id, bool Status) : m_id(Id),m_groupViewsBefore{},m_AllViews{},m_vip(Status),m_groupId(0),m_group(nullptr)
 {}
 
 UserData:: ~UserData()  = default;
@@ -29,21 +28,21 @@ void UserData::  updateAloneViews(Genre genre)
     switch (genre)
     {
         case Genre::COMEDY:
-            m_AllViews[0]++;
+            m_AllViews[COMEDYINDEX]++;
             break;
         case Genre::DRAMA:
-            m_AllViews[1]++;
+            m_AllViews[DRAMAINDEX]++;
             break;
         case Genre::ACTION:
-            m_AllViews[2]++;
+            m_AllViews[ACTIONINDEX]++;
             break;
         case Genre::FANTASY:
-            m_AllViews[3]++;
+            m_AllViews[FANTASYINDEX]++;
             break;
         case Genre::NONE:
             break;
     }
-    m_AllViews[4]++;
+    m_AllViews[NONEINDEX]++;
 
 }
 
@@ -54,17 +53,17 @@ int UserData:: getNumViewsAlone(int i) const
 
 int UserData:: getNumViewsGroup(int i)
 {
-    if(m_groupId > DEFAULT_GROUP_ID )
+    if(m_groupId > 0 )
        return (m_group->getNumViewsIndex(i) - this->m_groupViewsBefore[i]);
 
     return 0;
 }
 
 void UserData:: ResetgroupIdPtr() {
-    this->m_groupId = DEFAULT_GROUP_ID;
-    int arr[GENRE_NUMBERS] = {0};
+    this->m_groupId = 0;
+    int arr[GENRENUM] = {0};
     groupwatch(arr);
-    for (int i = 0; i < GENRE_NUMBERS; i++) {
+    for (int i = 0; i < GENRENUM; i++) {
         m_AllViews[i] += arr[i]; // we update the groups views for user just when we remove the group
     }
     this->m_group = nullptr;
@@ -82,7 +81,7 @@ GroupData* UserData:: getGrouptr() const{
 }
 
 void UserData::groupwatch(int* arr){
-    for(int i=0;i<GENRE_NUMBERS;i++){
+    for(int i=0;i<GENRENUM;i++){
         arr[i]=m_group->getNumViewsIndex(i)-m_groupViewsBefore[i];
         if(arr[i]< 0)
             arr[i]=0;

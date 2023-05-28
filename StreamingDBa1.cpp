@@ -273,24 +273,6 @@ StatusType streaming_database::group_watch(int groupId, int movieId)
     }
 
     watchGroup->updateTogtherViews(watchMovie);
-    //  printf(" group %d , size is %d\n*******",groupId,watchGroup->getGroupsize());
-    //   MovieData **arr = new MovieData *[100];
-    //  MovieData **arr2 = new MovieData *[100];
-    //  m_AllMoviesId.BuildInOrderArray(arr2);
-    //  m_AllMoviesRating.BuildInOrderArray(arr);
-//int ratsize = m_AllMoviesRating.getSize();
-    //   printf(" rat sie is %d \n",ratsize);
-//int idsize = m_AllMoviesId.getSize();
-    // printf(" rat sie is %d \n",idsize);
-    // printf("number of users %d \n" , m_AllUsers.getSize());
-    //  for(int i=0;i<m_AllMoviesRating.getSize();i++){
-    //    printf(" the ids are : %d and the ratings %d and the vies %d\n",arr[i]->getId(),arr[i]->getMovieRating(),arr[i]->getMovieViews());
-    //    printf(" the ids are : %d  %d\n",arr2[i]->getId());
-    // }
-//    delete[] arr;
-    //   delete[] arr2;
-    //   printf("the group size is %d \n",watchGroup->getGroupsize());
-    //  watchGroup->printarr();
     return UpdateRatingsMoviesTrees(movieId, watchMovie, 0, watchGroup->getGroupsize());
 }
 
@@ -322,7 +304,6 @@ StatusType streaming_database::get_all_movies(Genre genre, int *const output)
     if (!output)
         return StatusType::FAILURE;
     arrSize = get_all_movies_count(genre).ans();
-    //   printf("arrsize is %d \n",arrSize);
     if (arrSize <= 0)
         return StatusType::FAILURE;
     try
@@ -387,15 +368,15 @@ output_t<int> streaming_database::get_num_views(int userId, Genre genre)
     switch (genre)
     {
         case Genre::COMEDY:
-            return watchUser->getNumViewsAlone(0) + watchUser->getNumViewsGroup(0);
+            return watchUser->getNumViewsAlone(COMEDYINDEX) + watchUser->getNumViewsGroup(COMEDYINDEX);
         case Genre::DRAMA:
-            return watchUser->getNumViewsAlone(1) + watchUser->getNumViewsGroup(1);
+            return watchUser->getNumViewsAlone(DRAMAINDEX) + watchUser->getNumViewsGroup(DRAMAINDEX);
         case Genre::ACTION:
-            return watchUser->getNumViewsAlone(2) + watchUser->getNumViewsGroup(2);
+            return watchUser->getNumViewsAlone(ACTIONINDEX) + watchUser->getNumViewsGroup(ACTIONINDEX);
         case Genre::FANTASY:
-            return watchUser->getNumViewsAlone(3) + watchUser->getNumViewsGroup(3);
+            return watchUser->getNumViewsAlone(FANTASYINDEX) + watchUser->getNumViewsGroup(FANTASYINDEX);
         case Genre::NONE:
-            return watchUser->getNumViewsAlone(4) + watchUser->getNumViewsGroup(4);
+            return watchUser->getNumViewsAlone(NONEINDEX) + watchUser->getNumViewsGroup(NONEINDEX);
     }
     return StatusType::FAILURE;
 
@@ -404,7 +385,7 @@ output_t<int> streaming_database::get_num_views(int userId, Genre genre)
 StatusType streaming_database::rate_movie(int userId, int movieId, int rating)
 {
 
-    if (movieId <= 0 || userId <= 0 || rating < 0 || rating > 100)
+    if (movieId <= 0 || userId <= 0 || rating < 0 || rating > MAXRATING)
     {
         return StatusType::INVALID_INPUT;
     }
@@ -442,13 +423,11 @@ output_t<int> streaming_database::get_group_recommendation(int groupId)
         case Genre::COMEDY:
             if (m_COMEDY.getSize() != 0)
             {
-                //     printf(" comedyyyyy\n");
                 return m_COMEDY.getMax()->getData()->getId();
             }
             break;
 
         case Genre::DRAMA:
-            //  printf(" dramaaa\n");
             if (m_DRAMA.getSize() != 0)
             {
                 return m_DRAMA.getMax()->getData()->getId();
@@ -458,7 +437,6 @@ output_t<int> streaming_database::get_group_recommendation(int groupId)
         case Genre::ACTION:
             if (m_ACTION.getSize() != 0)
             {
-                //   printf(" action\n");
 
                 return m_ACTION.getMax()->getData()->getId();
             }
@@ -467,7 +445,6 @@ output_t<int> streaming_database::get_group_recommendation(int groupId)
         case Genre::FANTASY:
             if (m_FANTASY.getSize() != 0)
             {
-                //     printf(" fantsyyy with watch %d \n");
 
                 return m_FANTASY.getMax()->getData()->getId();
             }
@@ -495,7 +472,6 @@ streaming_database::UpdateRatingsMoviesTrees(int movieId, MovieData *movieData, 
         if (m_AllMoviesRating.Insert(new_movie_key, movieData) == StatusType::SUCCESS)
         {
 
-            //    printf("***************i entered the if *************\n");
             switch (movieData->getMovieGenre())
             {
                 case Genre::COMEDY:
